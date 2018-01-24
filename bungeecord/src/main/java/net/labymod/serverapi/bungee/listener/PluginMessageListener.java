@@ -1,13 +1,13 @@
-package net.labymod.serverapi.listener;
+package net.labymod.serverapi.bungee.listener;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
-import net.labymod.serverapi.LabyModPlugin;
-import net.labymod.serverapi.event.LabyModPlayerJoinEvent;
-import net.labymod.serverapi.event.MessageReceiveEvent;
+import net.labymod.serverapi.bungee.LabyModPlugin;
+import net.labymod.serverapi.bungee.event.LabyModPlayerJoinEvent;
+import net.labymod.serverapi.bungee.event.MessageReceiveEvent;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;

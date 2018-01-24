@@ -1,6 +1,5 @@
-package net.labymod.serverapi.event;
+package net.labymod.serverapi.bukkit.event;
 
-import com.google.gson.JsonElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -12,14 +11,13 @@ import org.bukkit.event.HandlerList;
  */
 @AllArgsConstructor
 @Getter
-public class MessageReceiveEvent extends Event {
+public class LabyModPlayerJoinEvent extends Event {
 
     @Getter
     private final static HandlerList handlerList = new HandlerList();
 
     private Player player;
-    private String messageKey;
-    private JsonElement jsonElement;
+    private String modVersion;
 
     @Override
     public HandlerList getHandlers() {

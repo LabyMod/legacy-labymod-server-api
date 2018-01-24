@@ -1,5 +1,6 @@
-package net.labymod.serverapi.event;
+package net.labymod.serverapi.bungee.event;
 
+import com.google.gson.JsonElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,10 @@ import net.md_5.bungee.api.plugin.Event;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class LabyModPlayerJoinEvent extends Event {
+public class MessageReceiveEvent extends Event {
 
     private ProxiedPlayer player;
-    private String modVersion;
+    private String messageKey;
+    private JsonElement jsonElement;
 
 }

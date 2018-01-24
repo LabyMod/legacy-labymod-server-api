@@ -1,5 +1,6 @@
-package net.labymod.serverapi;
+package net.labymod.serverapi.bungee;
 
+import net.labymod.serverapi.LabyModConfig;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;

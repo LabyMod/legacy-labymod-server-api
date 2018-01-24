@@ -12,6 +12,7 @@
         <module>common</module>
         <module>bukkit</module>
         <module>bungeecord</module>
+        <module>build</module>
     </modules>
 
     <repositories>

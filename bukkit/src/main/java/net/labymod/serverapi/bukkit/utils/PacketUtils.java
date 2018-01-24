@@ -1,9 +1,9 @@
-package net.labymod.serverapi.utils;
+package net.labymod.serverapi.bukkit.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
-import net.labymod.serverapi.LabyModPlugin;
+import net.labymod.serverapi.bukkit.LabyModPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

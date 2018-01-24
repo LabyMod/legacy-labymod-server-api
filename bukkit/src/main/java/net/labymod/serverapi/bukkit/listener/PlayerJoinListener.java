@@ -1,6 +1,6 @@
-package net.labymod.serverapi.listener;
+package net.labymod.serverapi.bukkit.listener;
 
-import net.labymod.serverapi.LabyModPlugin;
+import net.labymod.serverapi.bukkit.LabyModPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

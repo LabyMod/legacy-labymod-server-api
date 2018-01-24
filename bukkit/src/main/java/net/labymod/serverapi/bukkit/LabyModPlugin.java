@@ -1,4 +1,4 @@
-package net.labymod.serverapi;
+package net.labymod.serverapi.bukkit;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
@@ -6,12 +6,15 @@ import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
-import net.labymod.serverapi.event.LabyModPlayerJoinEvent;
-import net.labymod.serverapi.event.MessageReceiveEvent;
-import net.labymod.serverapi.event.MessageSendEvent;
-import net.labymod.serverapi.event.PermissionsSendEvent;
-import net.labymod.serverapi.listener.PlayerJoinListener;
-import net.labymod.serverapi.utils.PacketUtils;
+import net.labymod.serverapi.LabyModAPI;
+import net.labymod.serverapi.LabyModConfig;
+import net.labymod.serverapi.Permission;
+import net.labymod.serverapi.bukkit.event.LabyModPlayerJoinEvent;
+import net.labymod.serverapi.bukkit.event.MessageReceiveEvent;
+import net.labymod.serverapi.bukkit.event.MessageSendEvent;
+import net.labymod.serverapi.bukkit.event.PermissionsSendEvent;
+import net.labymod.serverapi.bukkit.listener.PlayerJoinListener;
+import net.labymod.serverapi.bukkit.utils.PacketUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

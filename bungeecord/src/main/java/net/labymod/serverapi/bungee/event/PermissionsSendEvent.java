@@ -1,12 +1,16 @@
-package net.labymod.serverapi.event;
+package net.labymod.serverapi.bungee.event;
 
-import com.google.gson.JsonElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.labymod.serverapi.Permission;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class created by qlow | Jan
@@ -14,11 +18,10 @@ import net.md_5.bungee.api.plugin.Event;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class MessageSendEvent extends Event {
+public class PermissionsSendEvent extends Event implements Cancellable {
 
     private ProxiedPlayer player;
-    private String messageKey;
-    private JsonElement jsonElement;
+    private Map<Permission, Boolean> permissions = new HashMap<Permission, Boolean>();
     @Setter
     private boolean cancelled;
 
