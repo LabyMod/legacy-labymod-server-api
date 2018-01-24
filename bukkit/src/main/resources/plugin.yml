@@ -1,0 +1,4 @@
+name: LabyModAPI
+author: LabyMedia
+version: 1.0
+main: net.labymod.serverapi.LabyModPlugin
