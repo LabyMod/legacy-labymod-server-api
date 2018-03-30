@@ -13,6 +13,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
 
 /**
  * Class created by qlow | Jan
@@ -38,6 +39,8 @@ public class PacketUtils {
     private Field networkManagerField;
     private Field channelField;
 
+    @Getter
+    private Class<?> chunkMapClass;
     private Field chunkMapA;
     private Field chunkMapB;
 
@@ -71,6 +74,15 @@ public class PacketUtils {
                     LabyModPlugin.getInstance().getLogger().severe( "Couldn't find a valid constructor for PacketPlayOutCustomPayload. Disabling the plugin." );
                     Bukkit.getPluginManager().disablePlugin( LabyModPlugin.getInstance() );
                 }
+            }
+        }
+
+        if (version.equalsIgnoreCase( "v1_8_R3" )) {
+            try {
+                chunkMapClass = getNmsClass( "PacketPlayOutMapChunk$ChunkMap" );
+            } catch ( ClassNotFoundException e ) {
+                LabyModPlugin.getInstance().getLogger().log(Level.WARNING, "Failed to init ChunkMap handle. Disabling ChunkCache" , e);
+                LabyModPlugin.getInstance().getLabyModConfig().setChunkCachingEnabled( false );
             }
         }
     }

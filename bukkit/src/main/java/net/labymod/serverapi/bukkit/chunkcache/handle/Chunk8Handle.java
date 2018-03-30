@@ -10,6 +10,7 @@ import net.labymod.serverapi.bukkit.chunkcache.cache.Chunk8Cache;
 import net.labymod.serverapi.bukkit.chunkcache.cache.Chunk8SingleCache;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -86,7 +87,7 @@ public class Chunk8Handle implements ChunkHandle {
 
                 int ncX[] = new int[maps.size()];
                 int ncZ[] = new int[maps.size()];
-                Object output[] = new Object[maps.size()];
+                Object output[] = (Object[]) Array.newInstance(LabyModPlugin.getInstance().getPacketUtils().getChunkMapClass(), maps.size());
 
                 int i = 0;
                 for ( Integer pos : maps ) {

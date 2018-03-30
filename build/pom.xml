@@ -30,6 +30,7 @@
                     <artifactSet>
                         <includes>
                             <include>net.labymod.serverapi:common</include>
+                            <include>org.lz4:lz4-java</include>
                             <include>net.labymod.serverapi:bukkit</include>
                             <include>net.labymod.serverapi:bungeecord</include>
                         </includes>

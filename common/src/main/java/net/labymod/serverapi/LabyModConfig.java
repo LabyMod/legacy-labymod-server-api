@@ -1,6 +1,7 @@
 package net.labymod.serverapi;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public abstract class LabyModConfig {
     private Map<Permission, Boolean> permissions = new HashMap<>();
 
     @Getter
+    @Setter
     private boolean chunkCachingEnabled;
 
     public LabyModConfig( File file ) {

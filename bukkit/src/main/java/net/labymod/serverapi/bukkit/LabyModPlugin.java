@@ -49,16 +49,15 @@ public class LabyModPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
-        // Initializing packet utils
-        this.packetUtils = new PacketUtils();
-
         // Creating the data folder
         if ( !getDataFolder().exists() )
             getDataFolder().mkdir();
 
         // Initializing the config
         this.labyModConfig = new BukkitLabyModConfig( new File( getDataFolder(), "config.yml" ) );
+
+        // Initializing packet utils
+        this.packetUtils = new PacketUtils();
 
         // Registering the listeners
         Bukkit.getPluginManager().registerEvents( new PlayerJoinListener(), this );
