@@ -9,6 +9,7 @@ import lombok.Getter;
 import net.labymod.serverapi.LabyModAPI;
 import net.labymod.serverapi.LabyModConfig;
 import net.labymod.serverapi.Permission;
+import net.labymod.serverapi.bukkit.chunkcache.ChunkCachingInstance;
 import net.labymod.serverapi.bukkit.event.LabyModPlayerJoinEvent;
 import net.labymod.serverapi.bukkit.event.MessageReceiveEvent;
 import net.labymod.serverapi.bukkit.event.MessageSendEvent;
@@ -23,6 +24,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Class created by qlow | Jan
@@ -117,6 +119,14 @@ public class LabyModPlugin extends JavaPlugin {
                 }
             }
         } );
+
+        if ( labyModConfig.isChunkCachingEnabled() ) {
+            try {
+                new ChunkCachingInstance();
+            } catch ( Exception e ) {
+                getLogger().log( Level.WARNING, "Failed to initialize ChunkCaching", e );
+            }
+        }
     }
 
     @Override

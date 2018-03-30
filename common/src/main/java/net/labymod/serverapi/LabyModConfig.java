@@ -16,6 +16,9 @@ public abstract class LabyModConfig {
     @Getter
     private Map<Permission, Boolean> permissions = new HashMap<>();
 
+    @Getter
+    private boolean chunkCachingEnabled;
+
     public LabyModConfig( File file ) {
         this.file = file;
     }
@@ -34,6 +37,14 @@ public abstract class LabyModConfig {
      * @return the value according to this key or <code>null</code> if there is no value according to this key
      */
     public abstract Object getValue( String key );
+
+    /**
+     * Gets a key's value
+     *
+     * @param key the key the value should be resolved from
+     * @return the value according to this key or <code>null</code> if there is no value according to this key
+     */
+    public abstract boolean getBooleanValue( String key );
 
     /**
      * Adds a default to the config
@@ -57,6 +68,8 @@ public abstract class LabyModConfig {
             // Putting the default value in
             addDefault( "permissions." + permission.name(), permission.isDefaultEnabled() );
         }
+
+        addDefault( "chunkcache" , true);
     }
 
     /**
@@ -68,13 +81,15 @@ public abstract class LabyModConfig {
             Object value = getValue( "permissions." + permission.name() );
 
             // Checking whether there is a value according to this permission
-            if ( value != null && value instanceof Boolean ) {
+            if ( value instanceof Boolean ) {
                 // Checking whether the permission value was modified
                 permissions.put( permission, ( Boolean ) value );
             } else {
                 permissions.put( permission, permission.isDefaultEnabled() );
             }
         }
+
+        chunkCachingEnabled = getBooleanValue( "chunkcache" );
     }
 
 }

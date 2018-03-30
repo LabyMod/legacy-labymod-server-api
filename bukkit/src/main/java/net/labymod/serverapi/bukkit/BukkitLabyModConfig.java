@@ -53,6 +53,11 @@ public class BukkitLabyModConfig extends LabyModConfig {
     }
 
     @Override
+    public boolean getBooleanValue( String key ) {
+        return fileConfiguration.getBoolean( key );
+    }
+
+    @Override
     public void addDefault( String key, Object value ) {
         fileConfiguration.addDefault( key, value );
     }

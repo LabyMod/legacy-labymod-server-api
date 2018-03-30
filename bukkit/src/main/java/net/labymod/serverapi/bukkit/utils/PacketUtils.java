@@ -2,9 +2,11 @@ package net.labymod.serverapi.bukkit.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import lombok.Getter;
 import net.labymod.serverapi.bukkit.LabyModPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
@@ -17,6 +19,7 @@ import java.lang.reflect.Method;
  */
 public class PacketUtils {
 
+    @Getter
     private String version;
 
     private Class<?> packetClass;
@@ -28,10 +31,15 @@ public class PacketUtils {
     private Class<?> packetDataSerializerClass;
     private Constructor<?> packetDataSerializerConstructor;
 
-    private Method getHandleMethod;
+    private Method getPlayerHandleMethod;
+    private Method getWorldHandleMethod;
     private Field playerConnectionField;
     @Getter
     private Field networkManagerField;
+    private Field channelField;
+
+    private Field chunkMapA;
+    private Field chunkMapB;
 
     public PacketUtils() {
         this.version = Bukkit.getServer().getClass().getPackage().getName().replace( ".", "," ).split( "," )[3];
@@ -68,6 +76,46 @@ public class PacketUtils {
     }
 
     /**
+     * Handle for net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk.ChunkMap
+     *
+     * @param chunkMap ChunkMap object
+     * @return val of a
+     */
+    public byte[] chunkMapA( Object chunkMap ) {
+        try {
+            if ( chunkMapA == null )
+                chunkMapA = chunkMap.getClass().getDeclaredField( "a" );
+
+            // Getting the player's nms-handle
+            return (byte[]) chunkMapA.get( chunkMap );
+        } catch ( Exception ex ) {
+            ex.printStackTrace();
+        }
+
+        return new byte[0];
+    }
+
+    /**
+     * Handle for net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk.ChunkMap
+     *
+     * @param chunkMap ChunkMap object
+     * @return val of b
+     */
+    public int chunkMapB( Object chunkMap ) {
+        try {
+            if ( chunkMapB == null )
+                chunkMapB = chunkMap.getClass().getDeclaredField( "b" );
+
+            // Getting the player's nms-handle
+            return chunkMapB.getInt( chunkMap );
+        } catch ( Exception ex ) {
+            ex.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    /**
      * Gets the player's nms-handle
      *
      * @param player the bukkit-player
@@ -75,11 +123,31 @@ public class PacketUtils {
      */
     public Object getPlayerHandle( Player player ) {
         try {
-            if ( getHandleMethod == null )
-                getHandleMethod = player.getClass().getMethod( "getHandle" );
+            if ( getPlayerHandleMethod == null )
+                getPlayerHandleMethod = player.getClass().getMethod( "getHandle" );
 
             // Getting the player's nms-handle
-            return getHandleMethod.invoke( player );
+            return getPlayerHandleMethod.invoke( player );
+        } catch ( Exception ex ) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the world's nms-handle
+     *
+     * @param world the bukkit-world
+     * @return the nms-handle
+     */
+    public Object getWorldHandle( World world ) {
+        try {
+            if ( getWorldHandleMethod == null )
+                getWorldHandleMethod = world.getClass().getMethod( "getHandle" );
+
+            // Getting the player's nms-handle
+            return getWorldHandleMethod.invoke( world );
         } catch ( Exception ex ) {
             ex.printStackTrace();
         }
@@ -108,6 +176,41 @@ public class PacketUtils {
     }
 
     /**
+     * Gets the player's netty channel
+     *
+     * @param player the bukkit-player
+     * @return the player-netty channel
+     */
+    public Channel getChannel( Player player ) {
+        return getChannel( getPlayerHandle( player ) );
+    }
+
+    /**
+     * Gets the player's netty channel
+     *
+     * @param nmsPlayer the player's nms-handle
+     * @return the player-netty channel
+     */
+    public Channel getChannel( Object nmsPlayer ) {
+        Object connection = getPlayerConnection( nmsPlayer );
+        try {
+            if ( networkManagerField == null )
+                networkManagerField = connection.getClass().getField( "networkManager" );
+
+            // Getting the player's connection
+            Object networkManager = networkManagerField.get( connection );
+
+            if ( channelField == null )
+                channelField = networkManager.getClass().getField( "channel" );
+
+            // Getting the player's connection
+            return (Channel) channelField.get( networkManager );
+        } catch ( IllegalAccessException | NoSuchFieldException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    /**
      * Sends a packet to the given player
      *
      * @param player the player the packet should be sent to
@@ -126,6 +229,17 @@ public class PacketUtils {
         } catch ( Exception ex ) {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Sends a plugin message to a player
+     *
+     * @param player  the player the packet should be sent to
+     * @param channel the channel to use
+     * @param buffer  payload
+     */
+    public void sendPluginMessage( Player player, String channel, byte[] buffer ) {
+        sendPacket( player, getPluginMessagePacket( channel, buffer ) );
     }
 
     /**
