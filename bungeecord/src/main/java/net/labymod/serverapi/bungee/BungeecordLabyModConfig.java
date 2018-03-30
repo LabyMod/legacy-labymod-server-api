@@ -55,6 +55,11 @@ public class BungeecordLabyModConfig extends LabyModConfig {
     }
 
     @Override
+    public boolean getBooleanValue( String key ) {
+        return configuration.getBoolean( key );
+    }
+
+    @Override
     public void addDefault( String key, Object value ) {
         if ( !configuration.contains( key ) )
             configuration.set( key, value );
