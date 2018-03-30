@@ -6,13 +6,17 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.netty.channel.Channel;
 import net.jpountz.xxhash.XXHashFactory;
 import net.labymod.serverapi.bukkit.LabyModPlugin;
 import net.labymod.serverapi.bukkit.chunkcache.handle.Chunk12Handle;
 import net.labymod.serverapi.bukkit.chunkcache.handle.Chunk8Handle;
 import net.labymod.serverapi.bukkit.chunkcache.handle.ChunkHandle;
+import net.labymod.serverapi.bukkit.event.MessageReceiveEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -109,6 +113,28 @@ public class ChunkCachingInstance implements Listener {
                 state.handleRequest( proto, player, mask, send );
             }
         } );
+    }
+
+    @EventHandler
+    public void onMessageReceivedEvent( MessageReceiveEvent event ) {
+        if ( event.getMessageKey().equals( "INFO" ) && event.getJsonElement() instanceof JsonObject ) {
+            JsonObject jsonElement = (JsonObject) event.getJsonElement();
+            JsonElement ccp = jsonElement.get( "ccp" );
+            if ( ccp != null && ccp.isJsonPrimitive() && ccp.getAsBoolean() ) { // Oh look, this one wants to cache chunks!
+                Player player = event.getPlayer();
+                PlayerState playerState = new PlayerState();
+                data.putIfAbsent( player.getUniqueId(), playerState );
+
+                int ver = Via.getAPI().getPlayerVersion( player.getUniqueId() );
+                if ( IS_12 || (IS_VIA && (335 <= ver && ver <= 340)) ) {
+                    Channel channel = LabyModPlugin.getInstance().getPacketUtils().getChannel( player );
+                    channel.pipeline().addAfter( "compress", "laby_chunks", new Chunk12Handle( player, playerState ) );
+                    log( "Enabling 1.12 player %s", player.getName() );
+                } else {
+                    log( "Enabling 1.8.9 player %s", player.getName() );
+                }
+            }
+        }
     }
 
     @EventHandler
