@@ -8,10 +8,11 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerState {
     private final Set<Integer> allowed = new HashSet<>();
-    private final Map<Integer, ChunkCache> states = new HashMap<>();
+    private final Map<Integer, ChunkCache> states = new ConcurrentHashMap<>();
 
     /**
      * This will check whether chunks need to be sent instantly or not (will be cached)
@@ -68,5 +69,15 @@ public class PlayerState {
 
     public void clear() {
         states.clear();
+    }
+
+    public void clearOlder(long millis) {
+        Iterator<Map.Entry<Integer, ChunkCache>> iterator = states.entrySet().iterator();
+        while ( iterator.hasNext() ) {
+            ChunkCache cache = iterator.next().getValue();
+            if (cache.getStoredAt() < millis) {
+                iterator.remove();
+            }
+        }
     }
 }

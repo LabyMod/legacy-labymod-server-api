@@ -120,12 +120,14 @@ public class LabyModPlugin extends JavaPlugin {
             }
         } );
 
-        if ( labyModConfig.isChunkCachingEnabled() ) {
+        if ( labyModConfig.isChunkCachingEnabled() && Bukkit.getPluginManager().isPluginEnabled( "ProtocolLib" ) ) {
             try {
                 new ChunkCachingInstance();
             } catch ( Exception e ) {
                 getLogger().log( Level.WARNING, "Failed to initialize ChunkCaching", e );
             }
+        } else {
+            getLogger().log( Level.INFO, "ChunkCaching disabled (disabled or missing ProtocolLib)");
         }
     }
 

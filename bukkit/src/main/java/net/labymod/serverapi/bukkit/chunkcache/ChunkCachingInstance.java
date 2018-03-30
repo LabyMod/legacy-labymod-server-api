@@ -24,9 +24,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import us.myles.ViaVersion.api.Via;
 
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class ChunkCachingInstance implements Listener {
@@ -37,7 +38,7 @@ public class ChunkCachingInstance implements Listener {
     private static boolean IS_VIA = false;
     private static boolean IS_12 = false;
 
-    private final Map<UUID, PlayerState> data = new HashMap<>();
+    private final Map<UUID, PlayerState> data = new ConcurrentHashMap<>();
     private ProtocolManager proto;
 
     public ChunkCachingInstance() {
@@ -56,6 +57,11 @@ public class ChunkCachingInstance implements Listener {
             log( "Unsupported LabyHash Server version (use 1.8.8 or 1.12.x)" );
             return;
         }
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously( LabyModPlugin.getInstance(), () -> {
+            long millis = System.currentTimeMillis() - TimeUnit.SECONDS.toMillis( 5 );
+            data.forEach( (uuid, state) -> state.clearOlder(millis) );
+        }, 100, 100 );
 
         if ( handle != null ) {
             proto = ProtocolLibrary.getProtocolManager();
