@@ -2,17 +2,18 @@ package net.labymod.serverapi.bukkit.chunkcache;
 
 import com.comphenix.protocol.ProtocolManager;
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import net.labymod.serverapi.bukkit.chunkcache.cache.ChunkCache;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerState {
     private final Set<Integer> allowed = new HashSet<>();
-    private final Map<Integer, ChunkCache> states = new ConcurrentHashMap<>();
+    private final ListMultimap<Integer, ChunkCache> states = MultimapBuilder.hashKeys().linkedListValues().build();
 
     /**
      * This will check whether chunks need to be sent instantly or not (will be cached)
@@ -42,7 +43,12 @@ public class PlayerState {
         Multimap<Class<? extends ChunkCache>, ChunkCache> targets = LinkedListMultimap.create();
         for ( int i = 0; i < mask.length; i++ ) {
             int hash = hashes[i];
-            ChunkCache cache = states.remove( hash );
+            List<ChunkCache> caches = states.get( hash );
+            if (caches == null || caches.isEmpty()) {
+                continue;
+            }
+            ChunkCache cache = caches.remove( 0 );
+
             if ( cache == null || mask[i] ) {
                 continue; // We do not need to send this to the player, yay! Just saved some traffic
             }
@@ -72,7 +78,7 @@ public class PlayerState {
     }
 
     public void clearOlder(long millis) {
-        Iterator<Map.Entry<Integer, ChunkCache>> iterator = states.entrySet().iterator();
+        Iterator<Map.Entry<Integer, ChunkCache>> iterator = states.entries().iterator();
         while ( iterator.hasNext() ) {
             ChunkCache cache = iterator.next().getValue();
             if (cache.getStoredAt() < millis) {

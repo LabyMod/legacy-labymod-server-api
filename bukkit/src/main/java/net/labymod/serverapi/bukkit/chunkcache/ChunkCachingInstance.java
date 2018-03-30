@@ -59,7 +59,7 @@ public class ChunkCachingInstance implements Listener {
         }
 
         Bukkit.getScheduler().runTaskTimerAsynchronously( LabyModPlugin.getInstance(), () -> {
-            long millis = System.currentTimeMillis() - TimeUnit.SECONDS.toMillis( 5 );
+            long millis = System.currentTimeMillis() - TimeUnit.SECONDS.toMillis( 10 );
             data.forEach( (uuid, state) -> state.clearOlder(millis) );
         }, 100, 100 );
 
@@ -90,20 +90,7 @@ public class ChunkCachingInstance implements Listener {
         Bukkit.getMessenger().registerIncomingPluginChannel( LabyModPlugin.getInstance(), PM_CHANNEL, ( pmchannel, player, bytes ) -> {
             ByteBuffer buffer = ByteBuffer.wrap( bytes );
             byte opcode = buffer.get();
-            if ( opcode == 0x42 ) { // Oh look, a supported LabyMod Client!
-                PlayerState playerState = new PlayerState();
-                data.putIfAbsent( player.getUniqueId(), playerState );
-
-                int ver = Via.getAPI().getPlayerVersion( player.getUniqueId() );
-                if ( IS_12 || (IS_VIA && (335 <= ver && ver <= 340)) ) {
-                    Channel channel = LabyModPlugin.getInstance().getPacketUtils().getChannel( player );
-                    channel.pipeline().addAfter( "compress", "laby_chunks", new Chunk12Handle( player, playerState ) );
-                    log( "Enabling 1.12 player %s", player.getName() );
-                } else {
-                    log( "Enabling 1.8.9 player %s", player.getName() );
-                }
-
-            } else if ( opcode == 0x21 ) {
+            if ( opcode == 0x21 ) {
                 PlayerState state = data.get( player.getUniqueId() );
                 if ( state == null ) {
                     return;

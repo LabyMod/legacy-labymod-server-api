@@ -35,6 +35,7 @@ public class Chunk8Handle implements ChunkHandle {
                     buffer.putInt( caches[0].getHash() );
                     buffer.putInt( caches[0].getX() );
                     buffer.putInt( caches[0].getZ() );
+                    ChunkCachingInstance.log( "Requesting one Chunk to player %s", player.getName() );
                     LabyModPlugin.getInstance().getPacketUtils().sendPluginMessage( player, ChunkCachingInstance.PM_CHANNEL, buffer.array() );
                     return true;
                 } else {
