@@ -59,7 +59,9 @@ public class Chunk8Handle implements ChunkHandle {
             Chunk8Cache[] caches = new Chunk8Cache[chunkMaps.length];
 
             for ( int i = 0; i < caches.length; i++ ) {
-                caches[i] = new Chunk8BulkCache( ChunkHandle.hashSingle( LabyModPlugin.getInstance().getPacketUtils().chunkMapA( chunkMaps[i] ) ), cX[i], cZ[i], chunkMaps[i], isSkylight );
+                byte[] bytes = LabyModPlugin.getInstance().getPacketUtils().chunkMapA( chunkMaps[i] );
+                int hash = ChunkHandle.hashSingle( bytes );
+                caches[i] = new Chunk8BulkCache( hash, cX[i], cZ[i], chunkMaps[i], isSkylight );
             }
 
             List<Integer> maps = playerState.handleSending( caches );
@@ -100,7 +102,7 @@ public class Chunk8Handle implements ChunkHandle {
                     i++;
                 }
                 for ( int l = 0; l < caches.length; l++ ) {
-                    if ( caches[i] == null ) {
+                    if ( caches[l] == null ) {
                         continue;
                     }
 

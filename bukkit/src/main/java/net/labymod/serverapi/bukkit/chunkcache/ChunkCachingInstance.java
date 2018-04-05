@@ -15,13 +15,13 @@ import net.labymod.serverapi.bukkit.chunkcache.handle.Chunk12Handle;
 import net.labymod.serverapi.bukkit.chunkcache.handle.Chunk8Handle;
 import net.labymod.serverapi.bukkit.chunkcache.handle.ChunkHandle;
 import net.labymod.serverapi.bukkit.event.MessageReceiveEvent;
+import net.labymod.serverapi.bukkit.utils.ViaUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import us.myles.ViaVersion.api.Via;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -68,10 +68,16 @@ public class ChunkCachingInstance implements Listener {
             proto.addPacketListener( new PacketAdapter( LabyModPlugin.getInstance(), ListenerPriority.HIGH, types ) {
                 @Override
                 public void onPacketSending( PacketEvent event ) {
-                    int ver = Via.getAPI().getPlayerVersion( event.getPlayer().getUniqueId() );
-                    if ( IS_12 || (IS_VIA && (335 <= ver && ver <= 340)) ) {
+                    if (IS_12) {
                         return;
                     }
+                    if (IS_VIA) {
+                        int ver = ViaUtils.getVersion( event.getPlayer().getUniqueId() );
+                        if (335 <= ver && ver <= 340){
+                            return;
+                        }
+                    }
+
                     PlayerState data = ChunkCachingInstance.this.data.get( event.getPlayer().getUniqueId() );
                     if ( data == null ) {
                         return;
@@ -118,8 +124,14 @@ public class ChunkCachingInstance implements Listener {
                 PlayerState playerState = new PlayerState();
                 data.putIfAbsent( player.getUniqueId(), playerState );
 
-                int ver = Via.getAPI().getPlayerVersion( player.getUniqueId() );
-                if ( IS_12 || (IS_VIA && (335 <= ver && ver <= 340)) ) {
+                boolean v112 = IS_12;
+                if (IS_VIA && !v112) {
+                    int ver = ViaUtils.getVersion( player.getUniqueId() );
+                    if (335 <= ver && ver <= 340) {
+                        v112 = true;
+                    }
+                }
+                if ( v112 ) {
                     Channel channel = LabyModPlugin.getInstance().getPacketUtils().getChannel( player );
                     channel.pipeline().addAfter( "compress", "laby_chunks", new Chunk12Handle( player, playerState ) );
                     log( "Enabling 1.12 player %s", player.getName() );
