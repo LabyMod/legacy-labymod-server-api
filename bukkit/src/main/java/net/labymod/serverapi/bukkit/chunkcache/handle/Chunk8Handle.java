@@ -90,7 +90,7 @@ public class Chunk8Handle implements ChunkHandle {
 
                 int ncX[] = new int[maps.size()];
                 int ncZ[] = new int[maps.size()];
-                Object output[] = (Object[]) Array.newInstance(LabyModPlugin.getInstance().getPacketUtils().getChunkMapClass(), maps.size());
+                Object output[] = (Object[]) Array.newInstance( LabyModPlugin.getInstance().getPacketUtils().getChunkMapClass(), maps.size() );
 
                 int i = 0;
                 for ( Integer pos : maps ) {

@@ -44,7 +44,7 @@ public class PlayerState {
         for ( int i = 0; i < mask.length; i++ ) {
             int hash = hashes[i];
             List<ChunkCache> caches = states.get( hash );
-            if (caches == null || caches.isEmpty()) {
+            if ( caches == null || caches.isEmpty() ) {
                 continue;
             }
             ChunkCache cache = caches.remove( 0 );
@@ -77,11 +77,11 @@ public class PlayerState {
         states.clear();
     }
 
-    public void clearOlder(long millis) {
+    public void clearOlder( long millis ) {
         Iterator<Map.Entry<Integer, ChunkCache>> iterator = states.entries().iterator();
         while ( iterator.hasNext() ) {
             ChunkCache cache = iterator.next().getValue();
-            if (cache.getStoredAt() < millis) {
+            if ( cache.getStoredAt() < millis ) {
                 iterator.remove();
             }
         }

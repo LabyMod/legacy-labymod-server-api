@@ -60,7 +60,7 @@ public class ChunkCachingInstance implements Listener {
 
         Bukkit.getScheduler().runTaskTimerAsynchronously( LabyModPlugin.getInstance(), () -> {
             long millis = System.currentTimeMillis() - TimeUnit.SECONDS.toMillis( 10 );
-            data.forEach( (uuid, state) -> state.clearOlder(millis) );
+            data.forEach( ( uuid, state ) -> state.clearOlder( millis ) );
         }, 100, 100 );
 
         if ( handle != null ) {
@@ -68,12 +68,12 @@ public class ChunkCachingInstance implements Listener {
             proto.addPacketListener( new PacketAdapter( LabyModPlugin.getInstance(), ListenerPriority.HIGH, types ) {
                 @Override
                 public void onPacketSending( PacketEvent event ) {
-                    if (IS_12) {
+                    if ( IS_12 ) {
                         return;
                     }
-                    if (IS_VIA) {
+                    if ( IS_VIA ) {
                         int ver = ViaUtils.getVersion( event.getPlayer().getUniqueId() );
-                        if (335 <= ver && ver <= 340){
+                        if ( 335 <= ver && ver <= 340 ) {
                             return;
                         }
                     }
@@ -125,9 +125,9 @@ public class ChunkCachingInstance implements Listener {
                 data.putIfAbsent( player.getUniqueId(), playerState );
 
                 boolean v112 = IS_12;
-                if (IS_VIA && !v112) {
+                if ( IS_VIA && !v112 ) {
                     int ver = ViaUtils.getVersion( player.getUniqueId() );
-                    if (335 <= ver && ver <= 340) {
+                    if ( 335 <= ver && ver <= 340 ) {
                         v112 = true;
                     }
                 }

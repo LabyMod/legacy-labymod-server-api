@@ -77,11 +77,11 @@ public class PacketUtils {
             }
         }
 
-        if (version.equalsIgnoreCase( "v1_8_R3" )) {
+        if ( version.equalsIgnoreCase( "v1_8_R3" ) ) {
             try {
                 chunkMapClass = getNmsClass( "PacketPlayOutMapChunk$ChunkMap" );
             } catch ( ClassNotFoundException e ) {
-                LabyModPlugin.getInstance().getLogger().log(Level.WARNING, "Failed to init ChunkMap handle. Disabling ChunkCache" , e);
+                LabyModPlugin.getInstance().getLogger().log( Level.WARNING, "Failed to init ChunkMap handle. Disabling ChunkCache", e );
                 LabyModPlugin.getInstance().getLabyModConfig().setChunkCachingEnabled( false );
             }
         }

@@ -126,7 +126,7 @@ public class LabyModPlugin extends JavaPlugin {
                 getLogger().log( Level.WARNING, "Failed to initialize ChunkCaching", e );
             }
         } else {
-            getLogger().log( Level.INFO, "ChunkCaching disabled (disabled or missing ProtocolLib)");
+            getLogger().log( Level.INFO, "ChunkCaching disabled (disabled or missing ProtocolLib)" );
         }
     }
 

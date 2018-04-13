@@ -29,7 +29,7 @@ public class Chunk8BulkCache extends Chunk8Cache {
         container.getModifier().write( 4, LabyModPlugin.getInstance().getPacketUtils().getWorldHandle( player.getWorld() ) );
         int[] cX = new int[chunks.size()];
         int[] cZ = new int[chunks.size()];
-        Object[] maps = (Object[]) Array.newInstance(LabyModPlugin.getInstance().getPacketUtils().getChunkMapClass(), chunks.size());
+        Object[] maps = (Object[]) Array.newInstance( LabyModPlugin.getInstance().getPacketUtils().getChunkMapClass(), chunks.size() );
         int i = 0;
         for ( ChunkCache chunk : chunks ) {
             cX[i] = chunk.getX();
