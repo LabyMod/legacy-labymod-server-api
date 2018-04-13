@@ -59,13 +59,12 @@ public class LabyModPlugin extends JavaPlugin {
         // Initializing packet utils
         this.packetUtils = new PacketUtils();
 
-        // Registering the listeners
-        Bukkit.getPluginManager().registerEvents( new PlayerJoinListener(), this );
+        if ( this.labyModConfig.isLabyControlEnabled() ) {
+            // Registering the listeners
+            Bukkit.getPluginManager().registerEvents( new PlayerJoinListener(), this );
 
-        // Registering the incoming plugin messages listeners
-        getServer().getMessenger().registerIncomingPluginChannel( this, "LABYMOD", new PluginMessageListener() {
-            @Override
-            public void onPluginMessageReceived( String channel, final Player player, byte[] bytes ) {
+            // Registering the incoming plugin messages listeners
+            getServer().getMessenger().registerIncomingPluginChannel( this, "LABYMOD", ( channel, player, bytes ) -> {
                 // Converting the byte array into a byte buffer
                 ByteBuf buf = Unpooled.wrappedBuffer( bytes );
 
@@ -74,48 +73,39 @@ public class LabyModPlugin extends JavaPlugin {
                     final String version = api.readString( buf, Short.MAX_VALUE );
 
                     // Calling the event synchronously
-                    Bukkit.getScheduler().runTask( LabyModPlugin.this, new Runnable() {
-                        @Override
-                        public void run() {
-                            // Checking whether the player is still online
-                            if ( !player.isOnline() )
-                                return;
+                    Bukkit.getScheduler().runTask( LabyModPlugin.this, () -> {
+                        // Checking whether the player is still online
+                        if ( !player.isOnline() )
+                            return;
 
-                            // Calling the LabyModPlayerJoinEvent
-                            Bukkit.getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version ) );
-                        }
+                        // Calling the LabyModPlayerJoinEvent
+                        Bukkit.getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version ) );
                     } );
                 } catch ( RuntimeException ex ) {
                 }
-            }
-        } );
+            } );
+        }
 
-        getServer().getMessenger().registerIncomingPluginChannel( this, "LMC", new PluginMessageListener() {
-            @Override
-            public void onPluginMessageReceived( String channel, final Player player, byte[] bytes ) {
-                // Converting the byte array into a byte buffer
-                ByteBuf buf = Unpooled.wrappedBuffer( bytes );
+        getServer().getMessenger().registerIncomingPluginChannel( this, "LMC", ( channel, player, bytes ) -> {
+            // Converting the byte array into a byte buffer
+            ByteBuf buf = Unpooled.wrappedBuffer( bytes );
 
-                try {
-                    // Reading the message key
-                    final String messageKey = api.readString( buf, Short.MAX_VALUE );
-                    final String messageContents = api.readString( buf, Short.MAX_VALUE );
-                    final JsonElement jsonMessage = jsonParser.parse( messageContents );
+            try {
+                // Reading the message key
+                final String messageKey = api.readString( buf, Short.MAX_VALUE );
+                final String messageContents = api.readString( buf, Short.MAX_VALUE );
+                final JsonElement jsonMessage = jsonParser.parse( messageContents );
 
-                    // Calling the event synchronously
-                    Bukkit.getScheduler().runTask( LabyModPlugin.this, new Runnable() {
-                        @Override
-                        public void run() {
-                            // Checking whether the player is still online
-                            if ( !player.isOnline() )
-                                return;
+                // Calling the event synchronously
+                Bukkit.getScheduler().runTask( LabyModPlugin.this, () -> {
+                    // Checking whether the player is still online
+                    if ( !player.isOnline() )
+                        return;
 
-                            // Calling the LabyModPlayerJoinEvent
-                            Bukkit.getPluginManager().callEvent( new MessageReceiveEvent( player, messageKey, jsonMessage ) );
-                        }
-                    } );
-                } catch ( RuntimeException ex ) {
-                }
+                    // Calling the LabyModPlayerJoinEvent
+                    Bukkit.getPluginManager().callEvent( new MessageReceiveEvent( player, messageKey, jsonMessage ) );
+                } );
+            } catch ( RuntimeException ex ) {
             }
         } );
 

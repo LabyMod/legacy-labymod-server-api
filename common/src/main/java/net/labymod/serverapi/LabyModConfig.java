@@ -21,6 +21,10 @@ public abstract class LabyModConfig {
     @Setter
     private boolean chunkCachingEnabled;
 
+    @Getter
+    @Setter
+    private boolean labyControlEnabled;
+
     public LabyModConfig( File file ) {
         this.file = file;
     }
@@ -72,6 +76,7 @@ public abstract class LabyModConfig {
         }
 
         addDefault( "chunkcache" , true);
+        addDefault( "labyperms" , true);
     }
 
     /**
@@ -92,6 +97,7 @@ public abstract class LabyModConfig {
         }
 
         chunkCachingEnabled = getBooleanValue( "chunkcache" );
+        chunkCachingEnabled = getBooleanValue( "labyperms" );
     }
 
 }
