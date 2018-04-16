@@ -49,7 +49,7 @@ public class ChunkCachingInstance implements Listener {
         if ( LabyModPlugin.getInstance().getPacketUtils().getVersion().equalsIgnoreCase( "v1_8_R3" ) ) {
             // 1.8.8
             handle = new Chunk8Handle();
-            types = new PacketType[]{PacketType.Play.Server.MAP_CHUNK, PacketType.Play.Server.MAP_CHUNK_BULK};
+            types = new PacketType[]{PacketType.Play.Server.MAP_CHUNK, PacketType.Play.Server.MAP_CHUNK_BULK, PacketType.Play.Server.UPDATE_SIGN};
         } else if ( IS_12 || IS_VIA ) {
             handle = null;
             types = null;

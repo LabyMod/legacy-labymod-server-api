@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import lombok.Getter;
 import net.labymod.serverapi.bukkit.LabyModPlugin;
+import net.labymod.serverapi.bukkit.chunkcache.handle.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

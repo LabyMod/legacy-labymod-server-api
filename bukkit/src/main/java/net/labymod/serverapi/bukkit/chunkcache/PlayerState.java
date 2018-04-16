@@ -1,19 +1,28 @@
 package net.labymod.serverapi.bukkit.chunkcache;
 
 import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.BlockPosition;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import io.netty.channel.Channel;
+import net.labymod.serverapi.bukkit.LabyModPlugin;
+import net.labymod.serverapi.bukkit.chunkcache.cache.Chunk8Cache;
 import net.labymod.serverapi.bukkit.chunkcache.cache.ChunkCache;
+import net.labymod.serverapi.bukkit.chunkcache.handle.ChunkPos;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerState {
     private final Set<Integer> allowed = new HashSet<>();
     private final ListMultimap<Integer, ChunkCache> states = MultimapBuilder.hashKeys().linkedListValues().build();
+    private final Map<ChunkPos, List<Object>> activeCoords = new ConcurrentHashMap<>();
 
     /**
      * This will check whether chunks need to be sent instantly or not (will be cached)
@@ -27,10 +36,25 @@ public class PlayerState {
                 send.add( i ); // Send the chunk directly
             } else { // Else cache it for later use
                 states.put( cache.getHash(), cache );
+                if (cache instanceof Chunk8Cache) {
+                    activeCoords.put( cache.getChunkPos(), ((Chunk8Cache) cache).getSignUpdates() );
+                }
             }
         }
 
         return send;
+    }
+
+    public boolean handleSignSending( PacketContainer packet ) {
+        BlockPosition blockPosition = packet.getBlockPositionModifier().read( 1 );
+        int chunkX = blockPosition.getX() >> 4;
+        int chunkZ = blockPosition.getZ() >> 4;
+        ChunkPos chunkPos = new ChunkPos( chunkX, chunkZ );
+        List<Object> list = activeCoords.get( chunkPos );
+        if (list != null) {
+            list.add( packet.getHandle() );
+        }
+        return list != null;
     }
 
     /**
@@ -49,8 +73,13 @@ public class PlayerState {
             }
             ChunkCache cache = caches.remove( 0 );
 
-            if ( cache == null || mask[i] ) {
-                continue; // We do not need to send this to the player, yay! Just saved some traffic
+            if ( cache == null ) {
+                continue;
+            }
+            activeCoords.remove( cache.getChunkPos() );
+            if ( mask[i] ) {
+                flushSigns( player, cache );
+                continue; // We do not need to send this chunk to the player, yay! Just saved some traffic
             }
             need++;
             allowed.add( cache.getHash() );
@@ -64,12 +93,25 @@ public class PlayerState {
             if ( v.size() == 0 ) {
                 continue;
             }
-            try {
-                v.iterator().next().sendTo( proto, player, v );
-            } catch ( InvocationTargetException e ) {
-                ChunkCachingInstance.log( "Failed to execute ChunkSend to " + entry.getKey().getSimpleName() );
-                e.printStackTrace();
+            v.forEach( cache -> {
+                try {
+                    cache.sendTo( proto, player, v );
+                } catch ( InvocationTargetException e ) {
+                    ChunkCachingInstance.log( "Failed to execute ChunkSend to " + entry.getKey().getSimpleName() );
+                    e.printStackTrace();
+                }
+                flushSigns( player, cache );
+            } );
+        }
+    }
+
+    private void flushSigns( Player player, ChunkCache cache ) {
+        if ( cache instanceof Chunk8Cache ) { // Send missing sign updates!
+            Channel channel = LabyModPlugin.getInstance().getPacketUtils().getChannel( player );
+            for ( Object signUpdate : ((Chunk8Cache) cache).getSignUpdates() ) {
+                channel.write( signUpdate );
             }
+            channel.flush();
         }
     }
 

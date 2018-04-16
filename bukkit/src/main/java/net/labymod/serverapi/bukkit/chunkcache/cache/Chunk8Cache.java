@@ -5,9 +5,12 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class Chunk8Cache extends ChunkCache {
     private final Object map;
+    private final List<Object> signUpdates = new LinkedList<>();
 
     Chunk8Cache( int hash, int x, int z, Object map ) {
         super( hash, x, z );
@@ -17,6 +20,10 @@ public abstract class Chunk8Cache extends ChunkCache {
 
     Object getMap() {
         return map;
+    }
+
+    public List<Object> getSignUpdates() {
+        return signUpdates;
     }
 
     @Override

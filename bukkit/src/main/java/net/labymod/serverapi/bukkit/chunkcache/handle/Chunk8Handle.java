@@ -119,6 +119,8 @@ public class Chunk8Handle implements ChunkHandle {
                 ChunkCachingInstance.log( "Requesting %d Chunks to player %s", caches.length - maps.size(), player.getName() );
                 return false; // Send modified bulkchunk packet
             }
+        } else if ( type == PacketType.Play.Server.UPDATE_SIGN ) {
+            return playerState.handleSignSending(pckt); // TRUE means cancel
         } else {
             return false;
         }
