@@ -14,15 +14,15 @@ import net.labymod.serverapi.bukkit.chunkcache.cache.ChunkCache;
 import net.labymod.serverapi.bukkit.chunkcache.handle.ChunkPos;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerState {
-    private final Set<Integer> allowed = new HashSet<>();
-    private final ListMultimap<Integer, ChunkCache> states = MultimapBuilder.hashKeys().linkedListValues().build();
-    private final Map<ChunkPos, List<Object>> activeCoords = new ConcurrentHashMap<>();
+    private final Set<ChunkPos> allowed = new HashSet<>();
+    private final Map<ChunkPos, ChunkCache> statesByCoord = new ConcurrentHashMap<>();
+    private final ListMultimap<Integer, ChunkCache> statesByHash = MultimapBuilder.hashKeys().linkedListValues().build();
 
     /**
      * This will check whether chunks need to be sent instantly or not (will be cached)
@@ -32,13 +32,11 @@ public class PlayerState {
 
         for ( int i = 0; i < caches.length; i++ ) {
             ChunkCache cache = caches[i];
-            if ( allowed.remove( cache.getHash() ) ) {
+            if ( allowed.remove( cache.getChunkPos() ) ) {
                 send.add( i ); // Send the chunk directly
             } else { // Else cache it for later use
-                states.put( cache.getHash(), cache );
-                if (cache instanceof Chunk8Cache) {
-                    activeCoords.put( cache.getChunkPos(), ((Chunk8Cache) cache).getSignUpdates() );
-                }
+                statesByCoord.put( cache.getChunkPos(), cache );
+                statesByHash.put( cache.getHash(), cache );
             }
         }
 
@@ -50,11 +48,11 @@ public class PlayerState {
         int chunkX = blockPosition.getX() >> 4;
         int chunkZ = blockPosition.getZ() >> 4;
         ChunkPos chunkPos = new ChunkPos( chunkX, chunkZ );
-        List<Object> list = activeCoords.get( chunkPos );
-        if (list != null) {
-            list.add( packet.getHandle() );
+        ChunkCache cache = statesByCoord.get( chunkPos );
+        if ( cache instanceof Chunk8Cache ) {
+            ((Chunk8Cache) cache).getSignUpdates().add( packet.getHandle() );
         }
-        return list != null;
+        return cache != null;
     }
 
     /**
@@ -64,27 +62,38 @@ public class PlayerState {
      */
     public void handleRequest( ProtocolManager proto, Player player, boolean[] mask, int[] hashes ) {
         int need = 0;
+        ByteBuffer buffer;
         Multimap<Class<? extends ChunkCache>, ChunkCache> targets = LinkedListMultimap.create();
         for ( int i = 0; i < mask.length; i++ ) {
             int hash = hashes[i];
-            List<ChunkCache> caches = states.get( hash );
+            List<ChunkCache> caches = statesByHash.removeAll( hash );
             if ( caches == null || caches.isEmpty() ) {
                 continue;
             }
-            ChunkCache cache = caches.remove( 0 );
+            boolean first = true;
+            buffer = ByteBuffer.allocate( 4 + (caches.size() - 1) * 12 ); // Byte Byte Short (3 * Int per Chunk)
+            buffer.put( (byte) 1 ); // BulkChunk
+            buffer.put( (byte) (1) );
+            buffer.putShort( (short) (caches.size() - 1) );
+            // Flush all chunks with given hash!
+            for ( ChunkCache cache : caches ) {
+                statesByCoord.remove( cache.getChunkPos() );
+                if ( mask[i] ) {
+                    flushSigns( player, cache );
+                    continue; // We do not need to send this chunk to the player, yay! Just saved some traffic
+                }
+                if ( first ) {
+                    need++;
+                    allowed.add( cache.getChunkPos() );
 
-            if ( cache == null ) {
-                continue;
+                    targets.put( cache.getClass(), cache );
+                    first = false;
+                } else {
+                    buffer.putInt( cache.getHash() );
+                    buffer.putInt( cache.getX() );
+                    buffer.putInt( cache.getZ() );
+                }
             }
-            activeCoords.remove( cache.getChunkPos() );
-            if ( mask[i] ) {
-                flushSigns( player, cache );
-                continue; // We do not need to send this chunk to the player, yay! Just saved some traffic
-            }
-            need++;
-            allowed.add( cache.getHash() );
-
-            targets.put( cache.getClass(), cache );
         }
         ChunkCachingInstance.log( "Player %s is in need of %d of %d chunks", player.getName(), need, mask.length );
 
@@ -116,15 +125,18 @@ public class PlayerState {
     }
 
     public void clear() {
-        states.clear();
+        statesByCoord.clear();
+        statesByHash.clear();
+        allowed.clear();
     }
 
     public void clearOlder( long millis ) {
-        Iterator<Map.Entry<Integer, ChunkCache>> iterator = states.entries().iterator();
+        Iterator<Map.Entry<Integer, ChunkCache>> iterator = statesByHash.entries().iterator();
         while ( iterator.hasNext() ) {
             ChunkCache cache = iterator.next().getValue();
             if ( cache.getStoredAt() < millis ) {
                 iterator.remove();
+                statesByCoord.remove( cache.getChunkPos() );
             }
         }
     }

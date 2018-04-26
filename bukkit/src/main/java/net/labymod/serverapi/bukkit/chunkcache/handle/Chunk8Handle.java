@@ -120,7 +120,7 @@ public class Chunk8Handle implements ChunkHandle {
                 return false; // Send modified bulkchunk packet
             }
         } else if ( type == PacketType.Play.Server.UPDATE_SIGN ) {
-            return playerState.handleSignSending(pckt); // TRUE means cancel
+            return playerState.handleSignSending( pckt );// TRUE means cancel
         } else {
             return false;
         }
