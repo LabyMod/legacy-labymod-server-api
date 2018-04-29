@@ -34,9 +34,11 @@ public class PlayerState {
             ChunkCache cache = caches[i];
             if ( allowed.remove( cache.getChunkPos() ) ) {
                 send.add( i ); // Send the chunk directly
+                ChunkCachingInstance.log( "2. Allow sending of %d/%d\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
             } else { // Else cache it for later use
                 statesByCoord.put( cache.getChunkPos(), cache );
                 statesByHash.put( cache.getHash(), cache );
+                ChunkCachingInstance.log( "1. Adding %d/%d to cache\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
             }
         }
 
@@ -62,7 +64,7 @@ public class PlayerState {
      */
     public void handleRequest( ProtocolManager proto, Player player, boolean[] mask, int[] hashes ) {
         int need = 0;
-        ByteBuffer buffer;
+        ByteBuffer buffer = null;
         Multimap<Class<? extends ChunkCache>, ChunkCache> targets = LinkedListMultimap.create();
         for ( int i = 0; i < mask.length; i++ ) {
             int hash = hashes[i];
@@ -71,15 +73,19 @@ public class PlayerState {
                 continue;
             }
             boolean first = true;
-            buffer = ByteBuffer.allocate( 4 + (caches.size() - 1) * 12 ); // Byte Byte Short (3 * Int per Chunk)
-            buffer.put( (byte) 1 ); // BulkChunk
-            buffer.put( (byte) (1) );
-            buffer.putShort( (short) (caches.size() - 1) );
-            // Flush all chunks with given hash!
+            if (caches.size() > 1) {
+                buffer = ByteBuffer.allocate( 4 + (caches.size() - 1) * 12 ); // Byte Byte Short (3 * Int per Chunk)
+                buffer.put( (byte) 1 ); // BulkChunk
+                buffer.put( (byte) (1) );
+                buffer.putShort( (short) (caches.size() - 1) );
+            }
+
+            // Flush all chunks with given hash and send them!
             for ( ChunkCache cache : caches ) {
                 statesByCoord.remove( cache.getChunkPos() );
                 if ( mask[i] ) {
                     flushSigns( player, cache );
+                    ChunkCachingInstance.log( "3. Player has chunk %d/%d already\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
                     continue; // We do not need to send this chunk to the player, yay! Just saved some traffic
                 }
                 if ( first ) {
@@ -88,11 +94,12 @@ public class PlayerState {
 
                     targets.put( cache.getClass(), cache );
                     first = false;
-                } else {
+                } else if (buffer != null) {
                     buffer.putInt( cache.getHash() );
                     buffer.putInt( cache.getX() );
                     buffer.putInt( cache.getZ() );
                 }
+                ChunkCachingInstance.log( "3. Player needs chunk %d/%d\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
             }
         }
         ChunkCachingInstance.log( "Player %s is in need of %d of %d chunks", player.getName(), need, mask.length );
@@ -112,6 +119,10 @@ public class PlayerState {
                 flushSigns( player, cache );
             } );
         }
+        if ( buffer != null) {
+            LabyModPlugin.getInstance().getPacketUtils().sendPluginMessage( player, ChunkCachingInstance.PM_CHANNEL, buffer.array() );
+        }
+
     }
 
     private void flushSigns( Player player, ChunkCache cache ) {
