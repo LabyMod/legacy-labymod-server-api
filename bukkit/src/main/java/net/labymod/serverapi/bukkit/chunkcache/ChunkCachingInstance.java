@@ -104,10 +104,11 @@ public class ChunkCachingInstance implements Listener {
                 // This is a client requesting chunks!
                 short length = buffer.getShort();
                 boolean[] mask = new boolean[length];
-                int[] send = new int[length];
+                int[][] send = new int[length][2];
                 for ( int i = 0; i < send.length; i++ ) {
                     mask[i] = buffer.get() == 1;
-                    send[i] = buffer.getInt();
+                    send[i][0] = buffer.getInt();
+                    send[i][1] = buffer.getInt();
                 }
                 state.handleRequest( proto, player, mask, send );
             }
