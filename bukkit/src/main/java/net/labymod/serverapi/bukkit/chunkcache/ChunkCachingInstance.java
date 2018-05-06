@@ -125,7 +125,7 @@ public class ChunkCachingInstance implements Listener {
                 JsonElement enabled = obj.get( "enabled" );
                 if ( enabled != null && enabled.isJsonPrimitive() && enabled.getAsBoolean() ) {
                     JsonElement version = obj.get( "version" );
-                    if ( version != null && version.isJsonPrimitive() && enabled.getAsInt() >= 2 ) {
+                    if ( version != null && version.isJsonPrimitive() && version.getAsInt() >= 2 ) {
                         Player player = event.getPlayer();
                         PlayerState playerState = new PlayerState();
                         data.putIfAbsent( player.getUniqueId(), playerState );
