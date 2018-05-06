@@ -119,24 +119,31 @@ public class ChunkCachingInstance implements Listener {
         if ( event.getMessageKey().equals( "INFO" ) && event.getJsonElement() instanceof JsonObject ) {
             JsonObject jsonElement = (JsonObject) event.getJsonElement();
             JsonElement ccp = jsonElement.get( "ccp" );
-            if ( ccp != null && ccp.isJsonPrimitive() && ccp.getAsBoolean() ) { // Oh look, this one wants to cache chunks!
-                Player player = event.getPlayer();
-                PlayerState playerState = new PlayerState();
-                data.putIfAbsent( player.getUniqueId(), playerState );
+            if ( ccp != null && ccp.isJsonObject() ) {
+                JsonObject obj = ccp.getAsJsonObject();
+                JsonElement enabled = obj.get( "enabled" );
+                if ( enabled != null && enabled.isJsonPrimitive() && enabled.getAsBoolean() ) {
+                    JsonElement version = obj.get( "version" );
+                    if ( version != null && version.isJsonPrimitive() && enabled.getAsInt() >= 2 ) {
+                        Player player = event.getPlayer();
+                        PlayerState playerState = new PlayerState();
+                        data.putIfAbsent( player.getUniqueId(), playerState );
 
-                boolean v112 = IS_12;
-                if ( IS_VIA && !v112 ) {
-                    int ver = ViaUtils.getVersion( player.getUniqueId() );
-                    if ( 335 <= ver && ver <= 340 ) {
-                        v112 = true;
+                        boolean v112 = IS_12;
+                        if ( IS_VIA && !v112 ) {
+                            int ver = ViaUtils.getVersion( player.getUniqueId() );
+                            if ( 335 <= ver && ver <= 340 ) {
+                                v112 = true;
+                            }
+                        }
+                        if ( v112 ) {
+                            Channel channel = LabyModPlugin.getInstance().getPacketUtils().getChannel( player );
+                            channel.pipeline().addAfter( "compress", "laby_chunks", new Chunk12Handle( player, playerState ) );
+                            log( "Enabling 1.12 player %s", player.getName() );
+                        } else {
+                            log( "Enabling 1.8.9 player %s", player.getName() );
+                        }
                     }
-                }
-                if ( v112 ) {
-                    Channel channel = LabyModPlugin.getInstance().getPacketUtils().getChannel( player );
-                    channel.pipeline().addAfter( "compress", "laby_chunks", new Chunk12Handle( player, playerState ) );
-                    log( "Enabling 1.12 player %s", player.getName() );
-                } else {
-                    log( "Enabling 1.8.9 player %s", player.getName() );
                 }
             }
         }
