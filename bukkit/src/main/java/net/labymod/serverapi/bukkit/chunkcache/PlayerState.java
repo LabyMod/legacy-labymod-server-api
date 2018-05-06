@@ -86,15 +86,17 @@ public class PlayerState {
             if ( v.isEmpty() ) {
                 continue;
             }
-            v.forEach( cache -> {
+            v.stream().findAny().ifPresent( ( cache ) -> {
                 try {
                     cache.sendTo( proto, player, v );
                 } catch ( InvocationTargetException e ) {
                     ChunkCachingInstance.debug( "Failed to execute ChunkSend to " + entry.getKey().getSimpleName() );
                     e.printStackTrace();
                 }
-                flushSigns( player, cache );
             } );
+            for ( ChunkCache cache : v ) {
+                flushSigns( player, cache );
+            }
         }
     }
 
