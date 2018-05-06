@@ -30,10 +30,10 @@ public class PlayerState {
             ChunkCache cache = caches[i];
             if ( allowed.remove( cache.getChunkPos() ) ) {
                 send.add( i ); // Send the chunk directly
-                ChunkCachingInstance.log( "2. Allow sending of %d/%d\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
+                ChunkCachingInstance.debug( "2. Allow sending of %d/%d\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
             } else { // Else cache it for later use
                 statesByCoord.put( cache.getChunkPos(), cache );
-                ChunkCachingInstance.log( "1. Adding %d/%d to cache\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
+                ChunkCachingInstance.debug( "1. Adding %d/%d to cache\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
             }
         }
 
@@ -41,7 +41,7 @@ public class PlayerState {
     }
 
     public boolean handleSignSending( PacketContainer packet ) {
-        BlockPosition blockPosition = packet.getBlockPositionModifier().read( 1 );
+        BlockPosition blockPosition = packet.getBlockPositionModifier().read( 0 );
         int chunkX = blockPosition.getX() >> 4;
         int chunkZ = blockPosition.getZ() >> 4;
         ChunkPos chunkPos = new ChunkPos( chunkX, chunkZ );
@@ -69,16 +69,16 @@ public class PlayerState {
             // Flush all chunks with given hash and send them!
             if ( mask[i] ) {
                 flushSigns( player, cache );
-                ChunkCachingInstance.log( "3. Player has chunk %d/%d already\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
+                ChunkCachingInstance.debug( "3. Player has chunk %d/%d already\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
                 continue; // We do not need to send this chunk to the player, yay! Just saved some traffic
             }
             need++;
             allowed.add( cache.getChunkPos() );
 
             targets.put( cache.getClass(), cache );
-            ChunkCachingInstance.log( "3. Player needs chunk %d/%d\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
+            ChunkCachingInstance.debug( "3. Player needs chunk %d/%d\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
         }
-        ChunkCachingInstance.log( "Player %s is in need of %d of %d chunks", player.getName(), need, mask.length );
+        ChunkCachingInstance.debug( "Player %s is in need of %d of %d chunks", player.getName(), need, mask.length );
 
         // This groups by class -> creates one BulkChunkPacket instead of several others
         for ( Map.Entry<Class<? extends ChunkCache>, Collection<ChunkCache>> entry : targets.asMap().entrySet() ) {
@@ -90,7 +90,7 @@ public class PlayerState {
                 try {
                     cache.sendTo( proto, player, v );
                 } catch ( InvocationTargetException e ) {
-                    ChunkCachingInstance.log( "Failed to execute ChunkSend to " + entry.getKey().getSimpleName() );
+                    ChunkCachingInstance.debug( "Failed to execute ChunkSend to " + entry.getKey().getSimpleName() );
                     e.printStackTrace();
                 }
                 flushSigns( player, cache );

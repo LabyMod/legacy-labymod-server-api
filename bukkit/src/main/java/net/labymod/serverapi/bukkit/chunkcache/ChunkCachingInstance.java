@@ -54,7 +54,7 @@ public class ChunkCachingInstance implements Listener {
             handle = null;
             types = null;
         } else {
-            log( "Unsupported LabyHash Server version (use 1.8.8 or 1.12.x)" );
+            debug( "Unsupported LabyHash Server version (use 1.8.8 or 1.12.x)" );
             return;
         }
 
@@ -164,6 +164,10 @@ public class ChunkCachingInstance implements Listener {
     }
 
     public static void log( String msg, Object... args ) {
-        LabyModPlugin.getInstance().getLogger().log( Level.INFO, "[CHUNKZ] " + String.format( msg, args ) );
+        LabyModPlugin.getInstance().getLogger().log( Level.INFO, "[ccp] " + String.format( msg, args ) );
+    }
+
+    public static void debug( String msg, Object... args ) {
+        // LabyModPlugin.getInstance().getLogger().log( Level.INFO, "[CHUNKZ] " + String.format( msg, args ) );
     }
 }

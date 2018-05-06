@@ -35,7 +35,7 @@ public class Chunk8Handle implements ChunkHandle {
                     buffer.putInt( caches[0].getHash() );
                     buffer.putInt( caches[0].getX() );
                     buffer.putInt( caches[0].getZ() );
-                    ChunkCachingInstance.log( "Requesting one Chunk to player %s", player.getName() );
+                    ChunkCachingInstance.debug( "Requesting one Chunk to player %s", player.getName() );
                     LabyModPlugin.getInstance().getPacketUtils().sendPluginMessage( player, ChunkCachingInstance.PM_CHANNEL, buffer.array() );
                     return true;
                 } else {
@@ -82,7 +82,7 @@ public class Chunk8Handle implements ChunkHandle {
                     buffer.putInt( cache.getX() );
                     buffer.putInt( cache.getZ() );
                 }
-                ChunkCachingInstance.log( "Requesting %d (all) Chunks to player %s", caches.length - maps.size(), player.getName() );
+                ChunkCachingInstance.debug( "Requesting %d (all) Chunks to player %s", caches.length - maps.size(), player.getName() );
                 LabyModPlugin.getInstance().getPacketUtils().sendPluginMessage( player, ChunkCachingInstance.PM_CHANNEL, buffer.array() );
                 return true; // Cancel sending of BulkPacket
             } else {
@@ -116,7 +116,7 @@ public class Chunk8Handle implements ChunkHandle {
                 pckt.getIntegerArrays().write( 1, ncZ );
                 pckt.getModifier().write( 2, output );
                 LabyModPlugin.getInstance().getPacketUtils().sendPluginMessage( player, ChunkCachingInstance.PM_CHANNEL, buffer.array() );
-                ChunkCachingInstance.log( "Requesting %d Chunks to player %s", caches.length - maps.size(), player.getName() );
+                ChunkCachingInstance.debug( "Requesting %d Chunks to player %s", caches.length - maps.size(), player.getName() );
                 return false; // Send modified bulkchunk packet
             }
         } else if ( type == PacketType.Play.Server.UPDATE_SIGN ) {
