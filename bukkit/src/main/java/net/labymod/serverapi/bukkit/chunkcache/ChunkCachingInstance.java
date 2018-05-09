@@ -128,7 +128,9 @@ public class ChunkCachingInstance implements Listener {
                     if ( version != null && version.isJsonPrimitive() && version.getAsInt() >= 2 ) {
                         Player player = event.getPlayer();
                         PlayerState playerState = new PlayerState();
-                        data.putIfAbsent( player.getUniqueId(), playerState );
+                        if (data.putIfAbsent( player.getUniqueId(), playerState ) != null) {
+                            return; // Already enabled
+                        }
 
                         boolean v112 = IS_12;
                         if ( IS_VIA && !v112 ) {
