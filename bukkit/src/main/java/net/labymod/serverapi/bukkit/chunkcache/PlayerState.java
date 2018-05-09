@@ -5,8 +5,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import io.netty.channel.Channel;
-import net.labymod.serverapi.bukkit.LabyModPlugin;
 import net.labymod.serverapi.bukkit.chunkcache.cache.Chunk8Cache;
 import net.labymod.serverapi.bukkit.chunkcache.cache.ChunkCache;
 import net.labymod.serverapi.bukkit.chunkcache.handle.ChunkPos;
@@ -47,7 +45,7 @@ public class PlayerState {
         ChunkPos chunkPos = new ChunkPos( chunkX, chunkZ );
         ChunkCache cache = statesByCoord.get( chunkPos );
         if ( cache instanceof Chunk8Cache ) {
-            ((Chunk8Cache) cache).getSignUpdates().add( packet.getHandle() );
+            ((Chunk8Cache) cache).getSignUpdates().add( packet );
         }
         return cache != null;
     }
@@ -68,7 +66,7 @@ public class PlayerState {
             }
             // Flush all chunks with given hash and send them!
             if ( mask[i] ) {
-                flushSigns( player, cache );
+                flushSigns( proto, player, cache );
                 ChunkCachingInstance.debug( "3. Player has chunk %d/%d already\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
                 continue; // We do not need to send this chunk to the player, yay! Just saved some traffic
             }
@@ -79,6 +77,10 @@ public class PlayerState {
             ChunkCachingInstance.debug( "3. Player needs chunk %d/%d\n", cache.getChunkPos().getX(), cache.getChunkPos().getZ() );
         }
         ChunkCachingInstance.debug( "Player %s is in need of %d of %d chunks", player.getName(), need, mask.length );
+
+        if ( need == 0 ) {
+            return;
+        }
 
         // This groups by class -> creates one BulkChunkPacket instead of several others
         for ( Map.Entry<Class<? extends ChunkCache>, Collection<ChunkCache>> entry : targets.asMap().entrySet() ) {
@@ -95,18 +97,21 @@ public class PlayerState {
                 }
             } );
             for ( ChunkCache cache : v ) {
-                flushSigns( player, cache );
+                flushSigns( proto, player, cache );
             }
         }
     }
 
-    private void flushSigns( Player player, ChunkCache cache ) {
+    private void flushSigns( ProtocolManager proto, Player player, ChunkCache cache ) {
         if ( cache instanceof Chunk8Cache ) { // Send missing sign updates!
-            Channel channel = LabyModPlugin.getInstance().getPacketUtils().getChannel( player );
             for ( Object signUpdate : ((Chunk8Cache) cache).getSignUpdates() ) {
-                channel.write( signUpdate );
+                try {
+                    proto.sendServerPacket( player, (PacketContainer) signUpdate );
+                } catch ( InvocationTargetException e ) {
+                    ChunkCachingInstance.debug( "Failed to execute SignSend to " + player.getDisplayName() );
+                    e.printStackTrace();
+                }
             }
-            channel.flush();
         }
     }
 
