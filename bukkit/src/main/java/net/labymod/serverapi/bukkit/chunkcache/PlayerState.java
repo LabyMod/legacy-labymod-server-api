@@ -78,7 +78,7 @@ public class PlayerState {
         }
         ChunkCachingInstance.debug( "Player %s is in need of %d of %d chunks", player.getName(), need, mask.length );
 
-        if ( need == 0 ) {
+        if ( need == 0 || !player.isOnline()) {
             return;
         }
 
@@ -104,9 +104,9 @@ public class PlayerState {
 
     private void flushSigns( ProtocolManager proto, Player player, ChunkCache cache ) {
         if ( cache instanceof Chunk8Cache ) { // Send missing sign updates!
-            for ( Object signUpdate : ((Chunk8Cache) cache).getSignUpdates() ) {
+            for ( PacketContainer signUpdate : ((Chunk8Cache) cache).getSignUpdates() ) {
                 try {
-                    proto.sendServerPacket( player, (PacketContainer) signUpdate );
+                    proto.sendServerPacket( player, signUpdate );
                 } catch ( InvocationTargetException e ) {
                     ChunkCachingInstance.debug( "Failed to execute SignSend to " + player.getDisplayName() );
                     e.printStackTrace();

@@ -1,6 +1,7 @@
 package net.labymod.serverapi.bukkit.chunkcache.cache;
 
 import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public abstract class Chunk8Cache extends ChunkCache {
     private final Object map;
-    private final List<Object> signUpdates = new LinkedList<>();
+    private final List<PacketContainer> signUpdates = new LinkedList<>();
 
     Chunk8Cache( int hash, int x, int z, Object map ) {
         super( hash, x, z );
@@ -22,7 +23,7 @@ public abstract class Chunk8Cache extends ChunkCache {
         return map;
     }
 
-    public List<Object> getSignUpdates() {
+    public List<PacketContainer> getSignUpdates() {
         return signUpdates;
     }
 
