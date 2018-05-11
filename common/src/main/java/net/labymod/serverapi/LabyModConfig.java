@@ -97,7 +97,7 @@ public abstract class LabyModConfig {
         }
 
         chunkCachingEnabled = getBooleanValue( "chunkcache" );
-        chunkCachingEnabled = getBooleanValue( "labyperms" );
+        labyControlEnabled = getBooleanValue( "labyperms" );
     }
 
 }
