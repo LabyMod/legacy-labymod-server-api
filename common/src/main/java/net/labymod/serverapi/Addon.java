@@ -22,11 +22,6 @@ public class Addon {
 
     private UUID uuid;
     private String name;
-    private int version;
-    /**
-     * Whether or not the addon is listed in the addons-store
-     */
-    private boolean approved;
 
     /**
      * Parses the addons from the INFO plugin message
@@ -47,9 +42,8 @@ public class Addon {
             JsonObject arrayObject = arrayElement.getAsJsonObject();
 
             if ( !arrayObject.has( "uuid" ) || !arrayObject.get( "uuid" ).isJsonPrimitive() || !arrayObject.get( "uuid" ).getAsJsonPrimitive().isString()
-                    || !arrayObject.has( "name" ) || !arrayObject.get( "name" ).isJsonPrimitive() || !arrayObject.get( "name" ).getAsJsonPrimitive().isString()
-                    || !arrayObject.has( "version" ) || !arrayObject.get( "version" ).isJsonPrimitive() || !arrayObject.get( "version" ).getAsJsonPrimitive().isNumber() )
-                continue;
+                    || !arrayObject.has( "name" ) || !arrayObject.get( "name" ).isJsonPrimitive() || !arrayObject.get( "name" ).getAsJsonPrimitive().isString() )
+            continue;
 
             UUID uuid = null;
 
@@ -59,9 +53,7 @@ public class Addon {
                 continue;
             }
 
-            addons.add( new Addon( uuid, arrayObject.get( "name" ).getAsString(), arrayObject.get( "version" ).getAsInt(),
-                    arrayObject.has( "approved" ) && arrayObject.get( "approved" ).isJsonPrimitive()
-                            && arrayObject.get( "approved" ).getAsJsonPrimitive().isBoolean() && arrayObject.get( "approved" ).getAsBoolean() ) );
+            addons.add( new Addon( uuid, arrayObject.get( "name" ).getAsString() ) );
         }
 
         return addons;
