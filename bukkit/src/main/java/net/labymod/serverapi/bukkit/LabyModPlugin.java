@@ -1,11 +1,13 @@
 package net.labymod.serverapi.bukkit;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
+import net.labymod.serverapi.Addon;
 import net.labymod.serverapi.LabyModAPI;
 import net.labymod.serverapi.LabyModConfig;
 import net.labymod.serverapi.Permission;
@@ -19,9 +21,9 @@ import net.labymod.serverapi.bukkit.utils.PacketUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -79,13 +81,12 @@ public class LabyModPlugin extends JavaPlugin {
                             return;
 
                         // Calling the LabyModPlayerJoinEvent
-                        Bukkit.getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version ) );
+                        Bukkit.getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version, false, new ArrayList<Addon>() ) );
                     } );
                 } catch ( RuntimeException ex ) {
                 }
             } );
         }
-
         getServer().getMessenger().registerIncomingPluginChannel( this, "LMC", ( channel, player, bytes ) -> {
             // Converting the byte array into a byte buffer
             ByteBuf buf = Unpooled.wrappedBuffer( bytes );
@@ -108,7 +109,42 @@ public class LabyModPlugin extends JavaPlugin {
             } catch ( RuntimeException ex ) {
             }
         } );
+        getServer().getMessenger().registerIncomingPluginChannel( this, "LMC", ( channel, player, bytes ) -> {
+            // Converting the byte array into a byte buffer
+            ByteBuf buf = Unpooled.wrappedBuffer( bytes );
 
+            try {
+                // Reading the message key
+                final String messageKey = api.readString( buf, Short.MAX_VALUE );
+                final String messageContents = api.readString( buf, Short.MAX_VALUE );
+                final JsonElement jsonMessage = jsonParser.parse( messageContents );
+
+                // Calling the event synchronously
+                Bukkit.getScheduler().runTask( LabyModPlugin.this, () -> {
+                    // Checking whether the player is still online
+                    if ( !player.isOnline() )
+                        return;
+
+                    // Listening to the INFO (join) message
+                    if ( messageKey.equals( "INFO" ) && jsonMessage.isJsonObject() ) {
+                        JsonObject jsonObject = jsonMessage.getAsJsonObject();
+                        String version = jsonObject.has( "version" )
+                                && jsonObject.get( "version" ).isJsonPrimitive()
+                                && jsonObject.get( "version" ).getAsJsonPrimitive().isString() ? jsonObject.get( "version" ).getAsString() : "Unknown";
+
+                        Bukkit.getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version,
+                                jsonObject.has( "ccp" ) && jsonObject.get( "ccp" ).isJsonPrimitive()
+                                        && jsonObject.get( "ccp" ).getAsJsonPrimitive().isBoolean()
+                                        && jsonObject.get( "ccp" ).getAsBoolean(), Addon.getAddons( jsonObject ) ) );
+                        return;
+                    }
+
+                    // Calling the MessageReceiveEvent
+                    Bukkit.getPluginManager().callEvent( new MessageReceiveEvent( player, messageKey, jsonMessage ) );
+                } );
+            } catch ( RuntimeException ex ) {
+            }
+        } );
         if ( labyModConfig.isChunkCachingEnabled() && Bukkit.getPluginManager().isPluginEnabled( "ProtocolLib" ) ) {
             try {
                 new ChunkCachingInstance();
