@@ -20,6 +20,7 @@ public class LabyModPlayerJoinEvent extends Event {
     private ProxiedPlayer player;
     private String modVersion;
     private boolean chunkCachingEnabled;
+    private int chunkCachingVersion;
     private List<Addon> addons;
 
 }

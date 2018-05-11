@@ -48,7 +48,7 @@ public class PluginMessageListener implements Listener {
                     @Override
                     public void run() {
                         // Calling the LabyModPlayerJoinEvent
-                        ProxyServer.getInstance().getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version, false, new ArrayList<Addon>() ) );
+                        ProxyServer.getInstance().getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version, false, 0, new ArrayList<Addon>() ) );
                     }
                 }, 0L, TimeUnit.SECONDS );
             } catch ( RuntimeException ex ) {
@@ -77,10 +77,21 @@ public class PluginMessageListener implements Listener {
                                     && jsonObject.get( "version" ).isJsonPrimitive()
                                     && jsonObject.get( "version" ).getAsJsonPrimitive().isString() ? jsonObject.get( "version" ).getAsString() : "Unknown";
 
+                            boolean chunkCachingEnabled = false;
+                            int chunkCachingVersion = 0;
+
+                            if ( jsonObject.has( "ccp" ) && jsonObject.get( "ccp" ).isJsonObject() ) {
+                                JsonObject chunkCachingObject = jsonObject.get( "ccp" ).getAsJsonObject();
+
+                                if ( chunkCachingObject.has( "enabled" ) )
+                                    chunkCachingEnabled = chunkCachingObject.get( "enabled" ).getAsBoolean();
+
+                                if ( chunkCachingObject.has( "version" ) )
+                                    chunkCachingVersion = chunkCachingObject.get( "version" ).getAsInt();
+                            }
+
                             ProxyServer.getInstance().getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version,
-                                    jsonObject.has( "ccp" ) && jsonObject.get( "ccp" ).isJsonPrimitive()
-                                            && jsonObject.get( "ccp" ).getAsJsonPrimitive().isBoolean()
-                                            && jsonObject.get( "ccp" ).getAsBoolean(), Addon.getAddons( jsonObject ) ) );
+                                    chunkCachingEnabled, chunkCachingVersion, Addon.getAddons( jsonObject ) ) );
                             return;
                         }
 
