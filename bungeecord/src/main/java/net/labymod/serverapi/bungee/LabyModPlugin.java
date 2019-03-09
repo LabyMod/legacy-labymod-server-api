@@ -1,7 +1,6 @@
 package net.labymod.serverapi.bungee;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import lombok.Getter;
 import net.labymod.serverapi.LabyModAPI;
@@ -76,7 +75,7 @@ public class LabyModPlugin extends Plugin {
      * @param messageContents the message's contents
      */
     public void sendServerMessage( ProxiedPlayer player, String messageKey, JsonElement messageContents ) {
-        messageContents = cloneJson( messageContents );
+        messageContents = JSON_PARSER.parse( messageContents.toString() );
 
         // Calling the Bukkit event
         MessageSendEvent sendEvent = new MessageSendEvent( player, messageKey, messageContents, false );
@@ -85,21 +84,6 @@ public class LabyModPlugin extends Plugin {
         // Sending the packet
         if ( !sendEvent.isCancelled() )
             player.unsafe().sendPacket( new PluginMessage( "LMC", api.getBytesToSend( messageKey, messageContents.toString() ), false ) );
-    }
-
-    /**
-     * Clones a JsonElement
-     *
-     * @param cloneElement the element that should be cloned
-     * @return the cloned element
-     */
-    public JsonElement cloneJson( JsonElement cloneElement ) {
-        try {
-            return JSON_PARSER.parse( cloneElement.toString() );
-        } catch ( JsonParseException ex ) {
-            ex.printStackTrace();
-            return null;
-        }
     }
 
 }
