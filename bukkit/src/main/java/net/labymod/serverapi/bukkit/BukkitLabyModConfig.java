@@ -1,6 +1,7 @@
 package net.labymod.serverapi.bukkit;
 
 import net.labymod.serverapi.LabyModConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -21,8 +22,8 @@ public class BukkitLabyModConfig extends LabyModConfig {
         if ( !file.exists() )
             try {
                 file.createNewFile();
-            } catch ( IOException e ) {
-                e.printStackTrace();
+            } catch ( IOException cause ) {
+                Bukkit.getLogger().warning( cause.getMessage() );
             }
 
         // Loading the config
@@ -61,8 +62,8 @@ public class BukkitLabyModConfig extends LabyModConfig {
     public void saveConfig() {
         try {
             fileConfiguration.save( file );
-        } catch ( IOException e ) {
-            e.printStackTrace();
+        } catch ( IOException cause ) {
+            Bukkit.getLogger().warning( cause.getMessage() );
         }
     }
 }
