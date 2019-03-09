@@ -35,8 +35,7 @@ public class LabyModPlugin extends JavaPlugin {
     @Getter
     private static LabyModPlugin instance;
 
-    @Getter
-    private final static JsonParser jsonParser = new JsonParser();
+    private static final JsonParser JSON_PARSER = new JsonParser();
 
     @Getter
     private LabyModConfig labyModConfig;
@@ -103,7 +102,7 @@ public class LabyModPlugin extends JavaPlugin {
                     // Reading the message key
                     final String messageKey = api.readString( buf, Short.MAX_VALUE );
                     final String messageContents = api.readString( buf, Short.MAX_VALUE );
-                    final JsonElement jsonMessage = jsonParser.parse( messageContents );
+                    final JsonElement jsonMessage = JSON_PARSER.parse( messageContents );
 
                     // Calling the event synchronously
                     Bukkit.getScheduler().runTask( LabyModPlugin.this, new Runnable() {
@@ -200,7 +199,7 @@ public class LabyModPlugin extends JavaPlugin {
      */
     public JsonElement cloneJson( JsonElement cloneElement ) {
         try {
-            return jsonParser.parse( cloneElement.toString() );
+            return JSON_PARSER.parse( cloneElement.toString() );
         } catch ( JsonParseException ex ) {
             ex.printStackTrace();
             return null;
