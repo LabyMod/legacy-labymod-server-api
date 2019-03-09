@@ -47,7 +47,7 @@ public class Addon {
                     || !arrayObject.has( "name" ) || !arrayObject.get( "name" ).isJsonPrimitive() || !arrayObject.get( "name" ).getAsJsonPrimitive().isString() )
             continue;
 
-            UUID uuid = null;
+            UUID uuid;
 
             try {
                 uuid = UUID.fromString( arrayObject.get( "uuid" ).getAsString() );
