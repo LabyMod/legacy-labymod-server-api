@@ -47,15 +47,7 @@ public class Addon {
                     || !arrayObject.has( "name" ) || !arrayObject.get( "name" ).isJsonPrimitive() || !arrayObject.get( "name" ).getAsJsonPrimitive().isString() )
             continue;
 
-            UUID uuid;
-
-            try {
-                uuid = UUID.fromString( arrayObject.get( "uuid" ).getAsString() );
-            } catch ( IllegalArgumentException ex ) {
-                continue;
-            }
-
-            addons.add( new Addon( uuid, arrayObject.get( "name" ).getAsString() ) );
+            addons.add( new Addon( UUID.fromString( arrayObject.get( "uuid" ).getAsString() ), arrayObject.get( "name" ).getAsString() ) );
         }
 
         return addons;
