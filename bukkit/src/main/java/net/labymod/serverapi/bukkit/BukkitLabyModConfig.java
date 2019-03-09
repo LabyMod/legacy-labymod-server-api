@@ -35,16 +35,9 @@ public class BukkitLabyModConfig extends LabyModConfig {
 
     @Override
     public void init( File file ) {
-        // Applying options to the config
         fileConfiguration.options().copyDefaults( true );
-
-        // Adding the defaults
         addDefaults();
-
-        // Saving the config after adding the defaults
         saveConfig();
-
-        // Loading the values
         loadValues();
     }
 
