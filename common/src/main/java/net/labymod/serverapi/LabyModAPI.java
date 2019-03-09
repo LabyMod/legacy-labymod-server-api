@@ -80,13 +80,13 @@ public final class LabyModAPI {
      * @param string the string that should be written to the buffer
      */
     private void writeString( ByteBuf buf, String string ) {
-        byte[] abyte = string.getBytes( Charset.forName( "UTF-8" ) );
+        byte[] bytes = string.getBytes( Charset.forName( "UTF-8" ) );
 
-        if ( abyte.length > Short.MAX_VALUE ) {
+        if ( bytes.length > Short.MAX_VALUE ) {
             throw new EncoderException( "String too big (was " + string.length() + " bytes encoded, max " + Short.MAX_VALUE + ")" );
         } else {
-            writeVarIntToBuffer( buf, abyte.length );
-            buf.writeBytes( abyte );
+            writeVarIntToBuffer( buf, bytes.length );
+            buf.writeBytes( bytes );
         }
     }
 
