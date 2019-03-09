@@ -38,6 +38,10 @@ public class LabyModPlugin extends Plugin {
     public void onEnable() {
         instance = this;
 
+        this.initialize();
+    }
+
+    private void initialize() {
         // Creating the data folder
         if ( !getDataFolder().exists() )
             getDataFolder().mkdir();
