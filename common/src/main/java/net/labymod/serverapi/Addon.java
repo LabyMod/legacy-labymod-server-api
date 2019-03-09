@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ public class Addon {
     @Deprecated
     public static List<Addon> getAddons( JsonObject jsonObject ) {
         if ( !jsonObject.has( "addons" ) || !jsonObject.get( "addons" ).isJsonArray() )
-            return new ArrayList<>();
+            return Collections.emptyList();
 
         List<Addon> addons = new ArrayList<>();
 
