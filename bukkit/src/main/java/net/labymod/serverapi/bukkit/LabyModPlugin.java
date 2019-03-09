@@ -160,8 +160,7 @@ public class LabyModPlugin extends JavaPlugin {
      * @param player the player the permissions should be sent to
      */
     public void sendPermissions( Player player ) {
-        Map<Permission, Boolean> modifiedPermissions = new HashMap<>();
-        modifiedPermissions.putAll( labyModConfig.getPermissions() );
+        Map<Permission, Boolean> modifiedPermissions = new HashMap<>( labyModConfig.getPermissions() );
 
         // Calling the Bukkit event
         PermissionsSendEvent sendEvent = new PermissionsSendEvent( player, modifiedPermissions, false );
