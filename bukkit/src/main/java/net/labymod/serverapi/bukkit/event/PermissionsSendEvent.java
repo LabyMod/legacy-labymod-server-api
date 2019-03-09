@@ -9,7 +9,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -23,7 +23,7 @@ public class PermissionsSendEvent extends Event implements Cancellable {
     private final static HandlerList handlerList = new HandlerList();
 
     private Player player;
-    private Map<Permission, Boolean> permissions = new HashMap<Permission, Boolean>();
+    private Map<Permission, Boolean> permissions = new EnumMap<>( Permission.class );
     @Setter
     private boolean cancelled;
 

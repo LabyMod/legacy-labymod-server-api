@@ -27,8 +27,7 @@ public class LabyModPlugin extends Plugin {
     @Getter
     private static LabyModPlugin instance;
 
-    @Getter
-    private final static JsonParser jsonParser = new JsonParser();
+    private static final JsonParser JSON_PARSER = new JsonParser();
 
     @Getter
     private LabyModConfig labyModConfig;
@@ -58,8 +57,7 @@ public class LabyModPlugin extends Plugin {
      * @param player the player the permissions should be sent to
      */
     public void sendPermissions( ProxiedPlayer player ) {
-        Map<Permission, Boolean> modifiedPermissions = new HashMap<>();
-        modifiedPermissions.putAll( labyModConfig.getPermissions() );
+        Map<Permission, Boolean> modifiedPermissions = new HashMap<>( labyModConfig.getPermissions() );
 
         // Calling the Bukkit event
         PermissionsSendEvent sendEvent = new PermissionsSendEvent( player, modifiedPermissions, false );
@@ -97,7 +95,7 @@ public class LabyModPlugin extends Plugin {
      */
     public JsonElement cloneJson( JsonElement cloneElement ) {
         try {
-            return jsonParser.parse( cloneElement.toString() );
+            return JSON_PARSER.parse( cloneElement.toString() );
         } catch ( JsonParseException ex ) {
             ex.printStackTrace();
             return null;

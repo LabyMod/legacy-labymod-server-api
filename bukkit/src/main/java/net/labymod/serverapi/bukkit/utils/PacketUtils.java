@@ -156,24 +156,4 @@ public class PacketUtils {
     public Class<?> getNmsClass( String nmsClassName ) throws ClassNotFoundException {
         return Class.forName( "net.minecraft.server." + version + "." + nmsClassName );
     }
-
-    /**
-     * Sets a field's value
-     *
-     * @param targetObject the target object
-     * @param fieldName    the field's name
-     * @param value        the value
-     */
-    public void setField( Object targetObject, String fieldName, Object value ) {
-        try {
-            Field field = targetObject.getClass().getDeclaredField( fieldName );
-            field.setAccessible( true );
-
-            field.set( targetObject, value );
-        } catch ( Exception ex ) {
-            ex.printStackTrace();
-        }
-    }
-
-
 }

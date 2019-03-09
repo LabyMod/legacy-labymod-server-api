@@ -9,7 +9,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -21,7 +21,7 @@ import java.util.Map;
 public class PermissionsSendEvent extends Event implements Cancellable {
 
     private ProxiedPlayer player;
-    private Map<Permission, Boolean> permissions = new HashMap<Permission, Boolean>();
+    private Map<Permission, Boolean> permissions = new EnumMap<>( Permission.class );
     @Setter
     private boolean cancelled;
 
