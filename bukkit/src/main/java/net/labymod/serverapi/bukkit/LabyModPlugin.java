@@ -141,7 +141,7 @@ public class LabyModPlugin extends JavaPlugin {
                             Bukkit.getPluginManager().callEvent( new MessageReceiveEvent( player, messageKey, jsonMessage ) );
                         }
                     } );
-                } catch ( RuntimeException ex ) {
+                } catch ( RuntimeException ignored ) {
                 }
             }
         } );
