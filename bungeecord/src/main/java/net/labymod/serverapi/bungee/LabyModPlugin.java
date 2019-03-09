@@ -27,8 +27,7 @@ public class LabyModPlugin extends Plugin {
     @Getter
     private static LabyModPlugin instance;
 
-    @Getter
-    private final static JsonParser jsonParser = new JsonParser();
+    private static final JsonParser JSON_PARSER = new JsonParser();
 
     @Getter
     private LabyModConfig labyModConfig;
@@ -97,7 +96,7 @@ public class LabyModPlugin extends Plugin {
      */
     public JsonElement cloneJson( JsonElement cloneElement ) {
         try {
-            return jsonParser.parse( cloneElement.toString() );
+            return JSON_PARSER.parse( cloneElement.toString() );
         } catch ( JsonParseException ex ) {
             ex.printStackTrace();
             return null;
