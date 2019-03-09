@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Class created by qlow | Jan
  */
-public class LabyModAPI {
+public final class LabyModAPI {
 
     /**
      * Gets the bytes we should send to a player to update the permissions
