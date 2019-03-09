@@ -29,6 +29,7 @@ public class Addon {
      * @param jsonObject the json object of the message
      * @return a list containing the message's addons
      */
+    @Deprecated
     public static List<Addon> getAddons( JsonObject jsonObject ) {
         if ( !jsonObject.has( "addons" ) || !jsonObject.get( "addons" ).isJsonArray() )
             return new ArrayList<>();
