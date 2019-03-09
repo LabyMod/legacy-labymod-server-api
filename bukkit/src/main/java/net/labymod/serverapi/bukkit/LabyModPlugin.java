@@ -179,7 +179,7 @@ public class LabyModPlugin extends JavaPlugin {
      * @param messageContents the message's contents
      */
     public void sendServerMessage( Player player, String messageKey, JsonElement messageContents ) {
-        messageContents = cloneJson( messageContents );
+        messageContents = JSON_PARSER.parse( messageContents.toString() );
 
         // Calling the Bukkit event
         MessageSendEvent sendEvent = new MessageSendEvent( player, messageKey, messageContents, false );
@@ -189,20 +189,4 @@ public class LabyModPlugin extends JavaPlugin {
         if ( !sendEvent.isCancelled() )
             packetUtils.sendPacket( player, packetUtils.getPluginMessagePacket( "LMC", api.getBytesToSend( messageKey, messageContents.toString() ) ) );
     }
-
-    /**
-     * Clones a JsonElement
-     *
-     * @param cloneElement the element that should be cloned
-     * @return the cloned element
-     */
-    public JsonElement cloneJson( JsonElement cloneElement ) {
-        try {
-            return JSON_PARSER.parse( cloneElement.toString() );
-        } catch ( JsonParseException ex ) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
 }
