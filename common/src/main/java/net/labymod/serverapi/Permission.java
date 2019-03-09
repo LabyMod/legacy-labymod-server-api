@@ -36,10 +36,10 @@ public enum Permission {
     }
 
     public String getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
     public boolean isDefaultEnabled() {
-        return defaultEnabled;
+        return this.defaultEnabled;
     }
 }
