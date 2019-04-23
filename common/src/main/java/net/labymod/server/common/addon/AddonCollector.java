@@ -8,7 +8,7 @@ import net.labymod.server.common.addon.model.AddonModel;
 import java.util.List;
 
 /**
- * The {@link AddonCollector} collect all {@link Addon} as {@link List} from {@link JsonObject}.
+ * The {@link AddonCollector} collect all {@link AddonModel} as {@link List} from {@link JsonObject}.
  *
  * @author Manuel Kollus
  * @version 1.0
