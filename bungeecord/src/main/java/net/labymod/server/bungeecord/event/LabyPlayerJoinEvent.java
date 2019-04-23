@@ -1,7 +1,7 @@
 package net.labymod.server.bungeecord.event;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import net.labymod.server.common.addon.model.Addon;
+import net.labymod.server.common.addon.model.AddonModel;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Event;
 
@@ -18,12 +18,12 @@ import java.util.List;
 public class LabyPlayerJoinEvent extends Event {
 
     private ProxiedPlayer proxiedPlayer;
-    private List<Addon> addons;
+    private List<AddonModel> addons;
     private String modificationVersion;
     private int chunkCachingVersion;
     private boolean chunkCachingEnabled;
 
-    public LabyPlayerJoinEvent( @NonNull ProxiedPlayer proxiedPlayer, @NonNull List<Addon> addons,
+    public LabyPlayerJoinEvent( @NonNull ProxiedPlayer proxiedPlayer, @NonNull List<AddonModel> addons,
                                 @NonNull String modificationVersion,
                                 int chunkCachingVersion,
                                 boolean chunkCachingEnabled ) {
@@ -40,7 +40,7 @@ public class LabyPlayerJoinEvent extends Event {
     }
 
     @NonNull
-    public List<Addon> addons( ) {
+    public List<AddonModel> addons( ) {
         return this.addons;
     }
 

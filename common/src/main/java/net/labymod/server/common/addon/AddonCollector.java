@@ -3,7 +3,7 @@ package net.labymod.server.common.addon;
 import com.google.gson.JsonObject;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import net.labymod.server.common.addon.model.Addon;
+import net.labymod.server.common.addon.model.AddonModel;
 
 import java.util.List;
 
@@ -22,5 +22,5 @@ public interface AddonCollector {
         return new StandardAddonCollector();
     }
 
-    List<Addon> collectAddons( @NonNull JsonObject jsonObject );
+    List<AddonModel> collectAddons( @NonNull JsonObject jsonObject );
 }

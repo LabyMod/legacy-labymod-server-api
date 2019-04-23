@@ -3,8 +3,7 @@ package net.labymod.server.common.addon;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import net.labymod.server.common.addon.model.Addon;
-import net.labymod.server.common.addon.model.AddonBuilder;
+import net.labymod.server.common.addon.model.AddonModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +12,7 @@ import java.util.UUID;
 
 /**
  * The {@link StandardAddonCollector} implement the {@link AddonCollector} to collect
- * all {@link Addon} as {@link List} from {@link JsonObject}.
+ * all {@link AddonModel} as {@link List} from {@link JsonObject}.
  *
  * @author Manuel Kollus
  * @version 1.0
@@ -22,12 +21,12 @@ import java.util.UUID;
 final class StandardAddonCollector implements AddonCollector {
 
     @Override
-    public List<Addon> collectAddons( @NonNull JsonObject jsonObject ) {
+    public List<AddonModel> collectAddons( @NonNull JsonObject jsonObject ) {
         if ( !jsonObject.has( "addons" ) || !jsonObject.get( "addons" ).isJsonArray() ) {
             return Collections.emptyList();
         }
 
-        List<Addon> addons = new ArrayList<>();
+        List<AddonModel> addons = new ArrayList<>();
 
         for ( JsonElement arrayElement : jsonObject.get( "addons" ).getAsJsonArray() ) {
             if ( !arrayElement.isJsonObject() )
@@ -47,7 +46,10 @@ final class StandardAddonCollector implements AddonCollector {
                 continue;
             }
 
-            addons.add( AddonBuilder.begin().withUniqueId( uuid ).withName( arrayObject.get( "name" ).getAsString() ).build() );
+            addons.add( AddonModel.newBuilder()
+                    .withName( arrayObject.get( "name" ).getAsString() )
+                    .withUniqueId( uuid )
+                    .create() );
         }
 
         return addons;

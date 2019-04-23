@@ -1,7 +1,7 @@
 package net.labymod.server.spigot.event;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import net.labymod.server.common.addon.model.Addon;
+import net.labymod.server.common.addon.model.AddonModel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -21,12 +21,12 @@ public class LabyPlayerJoinEvent extends Event {
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     private Player player;
-    private List<Addon> addons;
+    private List<AddonModel> addons;
     private String modificationVersion;
     private int chunkCachingVersion;
     private boolean chunkCachingEnabled;
 
-    public LabyPlayerJoinEvent( @NonNull Player player, @NonNull List<Addon> addons,
+    public LabyPlayerJoinEvent( @NonNull Player player, @NonNull List<AddonModel> addons,
                                 @NonNull String modificationVersion,
                                 int chunkCachingVersion,
                                 boolean chunkCachingEnabled ) {
@@ -43,7 +43,7 @@ public class LabyPlayerJoinEvent extends Event {
     }
 
     @NonNull
-    public List<Addon> addons( ) {
+    public List<AddonModel> addons( ) {
         return this.addons;
     }
 
