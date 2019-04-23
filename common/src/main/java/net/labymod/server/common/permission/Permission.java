@@ -34,10 +34,10 @@ public enum Permission {
     }
 
     public String getName( ) {
-        return name;
+        return this.name;
     }
 
     public boolean isDefaultEnabled( ) {
-        return defaultEnabled;
+        return this.defaultEnabled;
     }
 }
