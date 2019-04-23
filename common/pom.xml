@@ -1,33 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>serverapi</artifactId>
         <groupId>net.labymod</groupId>
+        <artifactId>server</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>net.labymod.serverapi</groupId>
+    <groupId>net.labymod.server</groupId>
     <artifactId>common</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <!-- Netty -->
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.3.Final</version>
+            <artifactId>netty-buffer</artifactId>
+            <version>4.1.32.Final</version>
+            <scope>provided</scope>
         </dependency>
-
-        <!-- Gson -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+            <version>4.1.32.Final</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.4</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

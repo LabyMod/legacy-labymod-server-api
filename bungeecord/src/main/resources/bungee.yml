@@ -1,4 +1,4 @@
-name: LabyModAPI
-author: LabyMedia
-version: 1.1
-main: net.labymod.serverapi.bungee.LabyModPlugin
+name: LabyModBungeeCordPlugin
+author: qubeSector
+version: 1.0
+main: net.labymod.server.bungeecord.LabyModBungeeCordPlugin

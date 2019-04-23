@@ -1,0 +1,4 @@
+name: LabyModSpigotPlugin
+author: qubeSector
+version: 1.0
+main: net.labymod.server.spigot.LabyModSpigotPlugin
