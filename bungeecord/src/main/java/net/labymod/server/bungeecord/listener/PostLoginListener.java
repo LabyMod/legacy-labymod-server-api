@@ -13,8 +13,8 @@ import net.md_5.bungee.event.EventHandler;
  * join an proxy server then the {@link LabyModBungeeCordPlugin} send all {@link Permission} to client.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public class PostLoginListener implements Listener {
 

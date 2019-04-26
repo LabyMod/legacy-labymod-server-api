@@ -22,8 +22,8 @@ import java.util.Collections;
  * The {@link PluginMessageEvent} implements {@link Listener} there are triggered when an message incoming.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public class PluginMessageListener implements Listener {
 

@@ -11,8 +11,8 @@ import java.nio.charset.StandardCharsets;
  * all methods for handling with the {@link ByteBuf}.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 final class StandardByteBuffers implements ByteBuffers {
 

@@ -7,8 +7,8 @@ import java.util.UUID;
  * The {@link AddonModel} is an object which are set and get the {@link #name} or {@link #uniqueId} of the addon.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public final class AddonModel {
 

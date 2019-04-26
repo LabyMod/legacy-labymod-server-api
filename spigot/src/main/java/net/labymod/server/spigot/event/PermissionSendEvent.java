@@ -14,8 +14,8 @@ import java.util.Map;
  * to the {@link Player} client.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public class PermissionSendEvent extends Event implements Cancellable {
 

@@ -16,8 +16,8 @@ import java.util.logging.Level;
  * are providing the {@link Configuration} from the BungeeCord api.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public class BungeeCordConfigurationProvider implements LabyConfigurationProvider {
 

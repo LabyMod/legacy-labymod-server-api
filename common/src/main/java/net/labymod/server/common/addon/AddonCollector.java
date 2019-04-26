@@ -11,8 +11,8 @@ import java.util.List;
  * The {@link AddonCollector} collect all {@link AddonModel} as {@link List} from {@link JsonObject}.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public interface AddonCollector {
 

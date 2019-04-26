@@ -13,8 +13,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
  * join a spigot server then the {@link LabyModSpigotPlugin} send all {@link Permission} to client.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public class PlayerJoinListener implements Listener {
 

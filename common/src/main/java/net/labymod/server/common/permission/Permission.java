@@ -7,8 +7,8 @@ package net.labymod.server.common.permission;
  * <p>If not an permission enabled, then the LabyMod module was disabled.</p>
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public enum Permission {
 

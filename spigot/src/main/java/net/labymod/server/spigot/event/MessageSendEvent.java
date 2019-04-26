@@ -11,8 +11,8 @@ import org.bukkit.event.HandlerList;
  * The {@link MessageSendEvent} extends {@link Event} there are triggered when an message send to {@link Player}.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public class MessageSendEvent extends Event implements Cancellable {
 

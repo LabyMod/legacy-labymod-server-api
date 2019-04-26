@@ -10,8 +10,8 @@ import net.md_5.bungee.api.plugin.Event;
  * an message from server.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public class MessageReceiveEvent extends Event {
 

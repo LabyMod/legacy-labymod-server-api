@@ -15,8 +15,8 @@ import java.util.logging.Level;
  * are providing the {@link FileConfiguration} from the Bukkit api.
  *
  * @author Manuel Kollus
- * @version 1.0
- * @since 1.0
+ * @version 2.0
+ * @since 2.0
  */
 public class SpigotConfigurationProvider implements LabyConfigurationProvider {
 

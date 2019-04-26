@@ -1,4 +1,4 @@
 name: LabyModBungeeCordPlugin
 author: qubeSector
-version: 1.0
+version: 2.0
 main: net.labymod.server.bungeecord.LabyModBungeeCordPlugin
