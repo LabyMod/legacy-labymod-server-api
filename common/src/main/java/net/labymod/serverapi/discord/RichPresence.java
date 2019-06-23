@@ -22,30 +22,35 @@ public class RichPresence extends Observable implements Observer
 	{
 		this.matchSecret = matchSecret;
 		setChanged();
+		notifyObservers();
 	}
 
 	public void setSpecrateSecret(String specrateSecret)
 	{
 		this.spectateSecret = specrateSecret;
 		setChanged();
+		notifyObservers();
 	}
 
 	public void setJoinSecrert(String joinSecrert)
 	{
 		this.joinSecrert = joinSecrert;
 		setChanged();
+		notifyObservers();
 	}
 
 	public void setParty(Party party)
 	{
 		this.party = party;
 		setChanged();
+		notifyObservers();
 	}
 	
 	@Override
 	public void update(Observable o, Object arg)
 	{
 		setChanged();
+		notifyObservers();
 	}
 	
 	public JsonObject toJson()

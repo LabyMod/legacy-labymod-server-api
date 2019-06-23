@@ -19,17 +19,20 @@ public class Party extends Observable
 	{
 		this.partyId = partyId;
 		setChanged();
+		notifyObservers();
 	}
 
 	public void setPartySize(int partySize)
 	{
 		this.partySize = partySize;
 		setChanged();
+		notifyObservers();
 	}
 
 	public void setPartyMax(int partyMax)
 	{
 		this.partyMax = partyMax;
 		setChanged();
+		notifyObservers();
 	}
 }
