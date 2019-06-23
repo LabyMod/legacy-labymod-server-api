@@ -25,16 +25,16 @@ public class RichPresence extends Observable implements Observer
 		notifyObservers();
 	}
 
-	public void setSpecrateSecret(String specrateSecret)
+	public void setSpectateSecret(String spectateSecret)
 	{
-		this.spectateSecret = specrateSecret;
+		this.spectateSecret = spectateSecret;
 		setChanged();
 		notifyObservers();
 	}
 
-	public void setJoinSecrert(String joinSecrert)
+	public void setJoinSecrert(String joinSecret)
 	{
-		this.joinSecrert = joinSecrert;
+		this.joinSecrert = joinSecret;
 		setChanged();
 		notifyObservers();
 	}
@@ -42,6 +42,21 @@ public class RichPresence extends Observable implements Observer
 	public void setParty(Party party)
 	{
 		this.party = party;
+		
+		if(party != null)
+			party.addObserver(this);
+		
+		setChanged();
+		notifyObservers();
+	}
+	
+	public void setGame(Game game)
+	{
+		this.game = game;
+		
+		if(game != null)
+			game.addObserver(this);
+		
 		setChanged();
 		notifyObservers();
 	}
