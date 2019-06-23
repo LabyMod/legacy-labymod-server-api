@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
+import lombok.NonNull;
 import net.labymod.serverapi.Addon;
 import net.labymod.serverapi.LabyModAPI;
 import net.labymod.serverapi.LabyModConfig;
@@ -17,6 +18,8 @@ import net.labymod.serverapi.bukkit.event.MessageSendEvent;
 import net.labymod.serverapi.bukkit.event.PermissionsSendEvent;
 import net.labymod.serverapi.bukkit.listener.PlayerJoinListener;
 import net.labymod.serverapi.bukkit.utils.PacketUtils;
+import net.labymod.serverapi.discord.RichPresence;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -188,6 +191,16 @@ public class LabyModPlugin extends JavaPlugin {
         // Sending the packet
         if ( !sendEvent.isCancelled() )
             packetUtils.sendPacket( player, packetUtils.getPluginMessagePacket( "LMC", api.getBytesToSend( messageKey, messageContents.toString() ) ) );
+    }
+    
+    /**
+     * Sends the Discord Rich Presence message to the player
+     * 
+     * @param player		the player the rich presence should be sent to
+     * @param richPresence	the presence object
+     */
+    public void sendRichPresence ( @NonNull Player player, @NonNull RichPresence richPresence ) {
+    	sendServerMessage(player, "discord_rpc", richPresence.toJson());
     }
 
     /**

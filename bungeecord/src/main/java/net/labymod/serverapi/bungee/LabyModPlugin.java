@@ -11,6 +11,7 @@ import net.labymod.serverapi.bungee.event.MessageSendEvent;
 import net.labymod.serverapi.bungee.event.PermissionsSendEvent;
 import net.labymod.serverapi.bungee.listener.PlayerJoinListener;
 import net.labymod.serverapi.bungee.listener.PluginMessageListener;
+import net.labymod.serverapi.discord.RichPresence;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.protocol.packet.PluginMessage;
@@ -85,6 +86,16 @@ public class LabyModPlugin extends Plugin {
         // Sending the packet
         if ( !sendEvent.isCancelled() )
             player.unsafe().sendPacket( new PluginMessage( "LMC", api.getBytesToSend( messageKey, messageContents.toString() ), false ) );
+    }
+    
+    /**
+     * Sends the Discord Rich Presence message to the player
+     * 
+     * @param player		the player the rich presence should be sent to
+     * @param richPresence	the presence object
+     */
+    public void sendRichPresence (ProxiedPlayer player, RichPresence richPresence ) {
+    	sendServerMessage(player, "discord_rpc", richPresence.toJson());
     }
 
     /**
