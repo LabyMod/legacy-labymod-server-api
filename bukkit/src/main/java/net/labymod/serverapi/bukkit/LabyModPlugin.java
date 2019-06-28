@@ -29,6 +29,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Class created by qlow | Jan
@@ -199,8 +201,19 @@ public class LabyModPlugin extends JavaPlugin {
      * @param player		the player the rich presence should be sent to
      * @param richPresence	the presence object
      */
-    public void sendRichPresence ( @NonNull Player player, @NonNull RichPresence richPresence ) {
+    public void sendRichPresence ( @NonNull final Player player, @NonNull RichPresence richPresence ) {
     	sendServerMessage(player, "discord_rpc", richPresence.toJson());
+    	
+    	richPresence.addObserver(new Observer() {
+			@Override
+			public void update(Observable observable, Object object) {
+				if(player.isOnline()) {
+					observable.deleteObserver(this);
+				}
+				
+				sendServerMessage(player, "discord_rpc", ((RichPresence) observable).toJson());
+			}
+		});
     }
 
     /**

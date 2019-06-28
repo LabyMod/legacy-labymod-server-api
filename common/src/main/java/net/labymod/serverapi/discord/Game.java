@@ -9,27 +9,25 @@ import lombok.NonNull;
 
 @Builder
 @Getter
-public class Game extends Observable
-{
+public class Game extends Observable {
 	@NonNull
 	private String gameMode;
 	private Instant startTime;
 	private Instant endTime;
 	
-	public void setGameMode(String gameMode)
-	{
+	public void setGameMode(String gameMode) {
 		this.gameMode = gameMode;
 		setChanged();
 		notifyObservers();
 	}
-	public void setStartTime(Instant startTime)
-	{
+	
+	public void setStartTime(Instant startTime) {
 		this.startTime = startTime;
 		setChanged();
 		notifyObservers();
 	}
-	public void setEndTime(Instant endTime)
-	{
+	
+	public void setEndTime(Instant endTime) {
 		this.endTime = endTime;
 		setChanged();
 		notifyObservers();
