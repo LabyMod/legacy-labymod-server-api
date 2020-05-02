@@ -117,7 +117,7 @@ public enum LabyEmotes {
         return emoteID;
     }
 
-    public LabyEmotes findById(int id) {
+    public static  LabyEmotes findById(int id) {
         return Arrays.stream(LabyEmotes.values()).filter(labyEmotes -> labyEmotes.getEmoteID() == id).findAny().orElse(null);
     }
 
