@@ -87,7 +87,7 @@ public class LabyModPlugin extends JavaPlugin {
                             Bukkit.getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version, false, 0, new ArrayList<Addon>() ) );
                         }
                     } );
-                } catch ( RuntimeException ex ) {
+                } catch ( RuntimeException ignored ) {
                 }
             }
         } );
@@ -115,21 +115,34 @@ public class LabyModPlugin extends JavaPlugin {
                             // Listening to the INFO (join) message
                             if ( messageKey.equals( "INFO" ) && jsonMessage.isJsonObject() ) {
                                 JsonObject jsonObject = jsonMessage.getAsJsonObject();
-                                String version = jsonObject.has( "version" )
+                                String version = "Unknown";
+                                if(jsonObject.has( "version" )
                                         && jsonObject.get( "version" ).isJsonPrimitive()
-                                        && jsonObject.get( "version" ).getAsJsonPrimitive().isString() ? jsonObject.get( "version" ).getAsString() : "Unknown";
+                                        && jsonObject.get( "version" ).getAsJsonPrimitive().isString()) {
+                                    version = jsonObject.get( "version" ).getAsString();
+                                }
+
 
                                 boolean chunkCachingEnabled = false;
                                 int chunkCachingVersion = 0;
 
-                                if ( jsonObject.has( "ccp" ) && jsonObject.get( "ccp" ).isJsonObject() ) {
+                                if ( jsonObject.has( "ccp" )
+                                        && jsonObject.get( "ccp" ).isJsonPrimitive()
+                                        && jsonObject.get( "ccp" ).getAsJsonPrimitive().isJsonObject()
+                                        && jsonObject.get( "ccp" ).isJsonObject() ) {
                                     JsonObject chunkCachingObject = jsonObject.get( "ccp" ).getAsJsonObject();
 
-                                    if ( chunkCachingObject.has( "enabled" ) )
+                                    if ( chunkCachingObject.has( "enabled" )
+                                            && chunkCachingObject.get( "enabled" ).isJsonPrimitive()
+                                            && chunkCachingObject.get( "enabled" ).getAsJsonPrimitive().isBoolean() ) {
                                         chunkCachingEnabled = chunkCachingObject.get( "enabled" ).getAsBoolean();
+                                    }
 
-                                    if ( chunkCachingObject.has( "version" ) )
-                                        chunkCachingVersion = chunkCachingObject.get( "version" ).getAsInt();
+                                    if ( chunkCachingObject.has( "version" )
+                                            && chunkCachingObject.get( "version" ).isJsonPrimitive()
+                                            && chunkCachingObject.get( "version" ).getAsJsonPrimitive().isNumber() ) {
+                                        chunkCachingVersion = chunkCachingObject.get( "version" ).getAsNumber().intValue();
+                                    }
                                 }
 
                                 Bukkit.getPluginManager().callEvent( new LabyModPlayerJoinEvent( player, version,
